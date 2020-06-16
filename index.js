@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const app = express()
-const connection = require('./conf')
+const routes = require('./routes/index')
 
 app.use(express.json())
 app.use(express.urlencoded({
@@ -14,16 +14,7 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.get('/users/:id/moments', (req, res) => {
-  connection.query('SELECT moment.id, moment_text, moment_context, moment_favorite, moment_event_date, family_firstname, color FROM moment JOIN family_moment ON moment_id=moment.id JOIN family_member fme ON family_member_id=fme.id JOIN color_family ON color_family_id=color_family.id WHERE moment.user_id = ? GROUP BY moment.id, fme.id', [req.params.id], (err, results) => {
-    if (err) {
-      // res.status(500).send('Erreur lors de la récupération des moments')
-      res.status(500).send(err)
-    } else {
-      res.json(results)
-    }
-  })
-})
+app.use('/users', routes.users)
 
 app.listen(process.env.PORT, (err) => {
   if (err) {
