@@ -106,7 +106,7 @@ CREATE TABLE `moment` (
   KEY `fk_moment_moment_type1_idx` (`moment_type_id`),
   CONSTRAINT `fk_moment_moment_type1` FOREIGN KEY (`moment_type_id`) REFERENCES `moment_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_moment_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -153,9 +153,12 @@ CREATE TABLE `user` (
   `user_temp_password` varchar(255) DEFAULT NULL,
   `user_birthday` date DEFAULT NULL,
   `parameter_id` int(11) NOT NULL,
+  `color_family_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_mail` (`user_mail`),
   KEY `fk_user_parameter_id` (`parameter_id`),
+  KEY `fk_user_color_family_id_idx` (`color_family_id`),
+  CONSTRAINT `fk_user_color_family_id` FOREIGN KEY (`color_family_id`) REFERENCES `color_family` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_user_parameter_id` FOREIGN KEY (`parameter_id`) REFERENCES `parameter` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -186,4 +189,4 @@ CREATE TABLE `user_contact` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-14 22:49:47
+-- Dump completed on 2020-06-16 23:59:37
