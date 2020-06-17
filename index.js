@@ -1,5 +1,6 @@
-const cors = require('cors')
 require('dotenv').config()
+
+const cors = require('cors')
 const express = require('express')
 const app = express()
 const routes = require('./routes/index')
@@ -12,6 +13,7 @@ app.use(express.urlencoded({
 app.use(cors('*'))
 
 app.use('/family', routes.family)
+app.use('/colors', routes.colors)
 
 app.listen(process.env.PORT, (err) => {
   if (err) {
