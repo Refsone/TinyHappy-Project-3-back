@@ -4,7 +4,6 @@ const connection = require('../conf')
 
 router.get('/', (req, res) => {
   connection.query('SELECT * FROM color_family LIMIT 8', (err, results) => {
-    console.log(results)
     if (err) {
       res.status(404).send('Not found')
     } else {
