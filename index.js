@@ -15,6 +15,7 @@ app.use(function (req, res, next) {
 })
 
 app.use('/users', routes.users)
+app.use('/family', routes.family)
 
 app.listen(process.env.PORT, (err) => {
   if (err) {
