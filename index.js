@@ -1,4 +1,3 @@
-const cors = require('cors')
 require('dotenv').config()
 const cors = require('cors')
 const express = require('express')
@@ -15,6 +14,7 @@ app.use(cors('*'))
 app.use('/users', routes.users)
 app.use('/moments', routes.moments)
 app.use('/family', routes.family)
+app.use('/colors', routes.colors)
 
 app.listen(process.env.PORT, (err) => {
   if (err) {
