@@ -14,6 +14,17 @@ router.get('/:id', (req, res) => {
   })
 })
 
+router.get('/:id/family', (req, res) => {
+  connection.query('SELECT family_firstname, family_lastname, family_surname, family_birthday, color FROM family_member fa JOIN color_family ON color_family.id=fa.color_family_id WHERE fa.user_id = ?', [req.params.id], (err, results) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send('Erreur lors de la récupération des membres de la famille')
+    } else {
+      res.json(results)
+    }
+  })
+})
+
 router.get('/:id/moments', (req, res) => {
   connection.query('SELECT moment.id, moment_text, moment_context, moment_favorite, moment_event_date, family_firstname, type, user_isPresent, color FROM moment JOIN family_moment ON moment_id=moment.id JOIN family_member fme ON family_member_id=fme.id JOIN color_family ON color_family_id=color_family.id JOIN moment_type ON moment.moment_type_id=moment_type.id WHERE moment.user_id = ? GROUP BY moment.id, fme.id', [req.params.id], (err, results) => {
     if (err) {
