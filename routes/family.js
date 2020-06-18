@@ -1,5 +1,4 @@
 const express = require('express')
-<<<<<<< HEAD
 const router = express.Router()
 const connection = require('../conf')
 const SchemaValidator = require('../schemaValidator')
@@ -21,9 +20,4 @@ router.post('/', validateRequest, (req, res) => {
     }
   })
 })
-=======
-
-const router = express.Router()
-
->>>>>>> ecb00c2... add routes for family data
 module.exports = router

@@ -12,13 +12,9 @@ app.use(express.urlencoded({
 app.use(cors('*'))
 
 app.use('/users', routes.users)
-<<<<<<< HEAD
 app.use('/moments', routes.moments)
 app.use('/family', routes.family)
 app.use('/colors', routes.colors)
-=======
-app.use('/family', routes.family)
->>>>>>> ecb00c2... add routes for family data
 
 app.listen(process.env.PORT, (err) => {
   if (err) {
