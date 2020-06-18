@@ -13,8 +13,8 @@ app.use(cors('*'))
 
 app.use('/family', routes.family)
 app.use('/colors', routes.colors)
-app.use('/users', routes.users)
 app.use('/moments', routes.moments)
+app.use('/users', routes.users)
 
 app.listen(process.env.PORT, (err) => {
   if (err) {
