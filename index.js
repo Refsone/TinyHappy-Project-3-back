@@ -11,9 +11,12 @@ app.use(express.urlencoded({
 
 app.use(cors('*'))
 
+app.use('/colors', routes.colors)
+app.use('/families', routes.families)
+app.use('/moments', routes.moments)
 app.use('/users', routes.users)
 app.use('/moments', routes.moments)
-app.use('/family', routes.family)
+app.use('/families', routes.families)
 app.use('/colors', routes.colors)
 
 app.listen(process.env.PORT, (err) => {
