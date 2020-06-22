@@ -15,13 +15,24 @@ router.get('/:id', (req, res) => {
 })
 
 router.get('/:id/family', (req, res) => {
-  connection.query('SELECT family_firstname, family_lastname, family_surname, family_birthday, color FROM family_member fa JOIN color_family ON color_family.id=fa.color_family_id WHERE fa.user_id = ?', [req.params.id], (err, results) => {
+  connection.query('SELECT fa.id AS member_id, family_firstname, family_lastname, family_surname, family_birthday, color FROM family_member fa JOIN color_family ON color_family.id=fa.color_family_id WHERE fa.user_id = ?', [req.params.id], (err, results) => {
     if (err) {
       console.log(err)
       res.status(500).send('Erreur lors de la récupération des membres de la famille')
     } else {
       res.json(results)
     }
+  })
+})
+router.get('/:user_id/family-members/:member_id', (req, res) => {
+  connection.query('SELECT family_firstname, family_lastname, family_surname, family_birthday, color_family_id FROM family_member WHERE id = ?', [req.params.member_id], (err, results) => {
+    if (err) {
+      return res.status(500).json({
+        message: err.message,
+        sql: err.sql
+      })
+    }
+    return res.json(results)
   })
 })
 

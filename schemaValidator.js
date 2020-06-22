@@ -19,7 +19,8 @@ module.exports = (useJoiError = false) => {
 
   // return the validation middleware
   return (req, res, next) => {
-    const route = req.route.path
+    const route = req.baseUrl
+    console.log(req)
     const method = req.method.toLowerCase()
     if (_.includes(_supportedMethods, method) && _.has(Schemas, route)) {
       // get schema for the current route

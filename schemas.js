@@ -15,6 +15,16 @@ const familyAddSchema = Joi.object().keys({
   color_family_id: color
 })
 
+const familyModifySchema = Joi.object().keys({
+  id: id,
+  family_firstname: nameRequired,
+  family_lastname: nameNotRequired,
+  family_surname: nameNotRequired,
+  family_birthday: birthdayDate,
+  color_family_id: color
+})
+
 module.exports = {
-  '/': familyAddSchema
+  '/family-members/new': familyAddSchema,
+  '/family-members/update': familyModifySchema
 }
