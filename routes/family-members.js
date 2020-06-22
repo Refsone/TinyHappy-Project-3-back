@@ -31,8 +31,8 @@ router.put('/update', validateRequest, (req, res) => {
     connection.query('SELECT * FROM family_member WHERE id = ?', formData.id, (err2, results2) => {
       if (err2) {
         return res.status(400).json({
-          message: err.message,
-          sql: err.sql
+          message: err2.message,
+          sql: err2.sql
         })
       }
       const host = req.get('host')
