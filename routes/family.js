@@ -1,14 +1,23 @@
 const express = require('express')
-
 const router = express.Router()
-const connection = require('../conf.js')
+const connection = require('../conf')
+const SchemaValidator = require('../schemaValidator')
 
-router.get('/:id', (req, res) => {
-  connection.query('SELECT family_member.id, family_firstname, color FROM family_member JOIN user ON user.id = family_member.user_id JOIN color_family ON color_family.id = color_family_id WHERE user.id = ?', [req.params.id], (err, results) => {
+// We are using the formatted Joi Validation error
+// Pass false as argument to use a generic error
+const validateRequest = SchemaValidator(true)
+
+router.post('/', validateRequest, (req, res) => {
+  const formData = req.body
+  console.log(formData)
+
+  connection.query('INSERT INTO family_member SET ?', formData, (err, results) => {
     if (err) {
-      res.send(err)
-    } res.status(200).json(results)
+      res.status(400).send('An error is occured when created a new member' + err)
+    } else {
+      console.log('req ok')
+      res.status(201).send('New family user created')
+    }
   })
 })
-
 module.exports = router
