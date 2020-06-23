@@ -28,7 +28,7 @@ router.get('/:id/family', (req, res) => {
   })
 })
 router.get('/:user_id/family-members/:member_id', (req, res) => {
-  connection.query('SELECT family_firstname, family_lastname, family_surname, family_birthday, color_family_id FROM family_member WHERE id = ?', [req.params.member_id], (err, results) => {
+  connection.query('SELECT id, family_firstname, family_lastname, family_surname, family_birthday, color_family_id FROM family_member WHERE id = ?', [req.params.member_id], (err, results) => {
     if (err) {
       return res.status(500).json({
         message: err.message,

@@ -80,4 +80,19 @@ router.put('/update', validateRequest, (req, res) => {
   })
 })
 
+// Delete a member
+router.delete('/:id', (req, res) => {
+  connection.query('DELETE from family_member WHERE id = ?', req.params.id, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        message: err.message,
+        sql: err.sql
+      })
+    }
+    return res.status(200).json({
+      message: 'Le membre a bien été effacé'
+    })
+  })
+})
+
 module.exports = router
