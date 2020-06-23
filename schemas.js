@@ -17,6 +17,7 @@ const familyAddSchema = Joi.object().keys({
 
 const familyModifySchema = Joi.object().keys({
   id: id,
+  user_id: id,
   family_firstname: nameRequired,
   family_lastname: nameNotRequired,
   family_surname: nameNotRequired,
