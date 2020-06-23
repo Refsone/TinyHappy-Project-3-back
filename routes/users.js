@@ -3,6 +3,9 @@ const express = require('express')
 const router = express.Router()
 const connection = require('../conf')
 
+const SchemaValidator = require('../schemaValidator')
+const validateRequest = SchemaValidator(true)
+
 router.get('/:id', (req, res) => {
   connection.query('SELECT user_firstname, user_lastname, user_surname, user_birthday, color_family_id, color FROM user JOIN color_family ON color_family.id=user.color_family_id WHERE user.id = ?', [req.params.id], (err, results) => {
     if (err) {
@@ -64,6 +67,44 @@ router.get('/:id/moments', (req, res) => {
       idToDrop.map(elt => moments.splice(elt, 1))
       res.json(moments)
     }
+  })
+})
+
+router.put('/update', validateRequest, (req, res) => {
+  const formdata = req.body
+  const id = req.body.id
+  connection.query('UPDATE user SET ? WHERE id = ?', [formdata, id], (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        message: err.message,
+        sql: err.sql
+      })
+    }
+    connection.query('SELECT * from user WHERE id = ?', id, (err2, result2) => {
+      if (err2) {
+        return res.status(500).json({
+          message: err2.message,
+          sql: err2.sql
+        })
+      }
+      const { user_password, user_mail, parameter_id, user_temp_password, ...dataUser } = result2[0]
+
+      const host = req.get('host')
+      const location = `http://${host}/users/family-members/${id}`
+
+      if (dataUser.user_birthday) {
+        const { user_birthday, ...user } = dataUser
+        const tempDate = user_birthday.toLocaleDateString('fr-FR').split('-').reverse().join('/')
+        user.user_birthday = tempDate
+        return res.status(200)
+          .set('location', location)
+          .json({ user })
+      } else {
+        return res.status(200)
+          .set('location', location)
+          .json({ dataUser })
+      }
+    })
   })
 })
 

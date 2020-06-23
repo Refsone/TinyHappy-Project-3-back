@@ -37,9 +37,19 @@ router.put('/update', validateRequest, (req, res) => {
       }
       const host = req.get('host')
       const location = `http://${host}/users/family-members/${formData.id}`
-      return res.status(200)
-        .set('location', location)
-        .json({ results2 })
+
+      if (results2[0].family_birthday) {
+        const { family_birthday, ...member } = results2[0]
+        const tempDate = family_birthday.toLocaleDateString('fr-FR').split('-').reverse().join('/')
+        member.family_birthday = tempDate
+        return res.status(200)
+          .set('location', location)
+          .json({ member })
+      } else {
+        return res.status(200)
+          .set('location', location)
+          .json({ results2 })
+      }
     })
   })
 })
