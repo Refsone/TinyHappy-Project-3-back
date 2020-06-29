@@ -11,7 +11,7 @@ router.post('/new', validateRequest, (req, res) => {
 
   connection.query('INSERT INTO family_member SET ?', formData, (err, results) => {
     if (err) {
-      return res.status(400).json({
+      return res.status(500).json({
         message: err.message,
         sql: err.sql
       })
@@ -19,7 +19,7 @@ router.post('/new', validateRequest, (req, res) => {
     // If no error we send the create datas to the user
     connection.query('SELECT * FROM family_member WHERE id = ?', results.insertId, (err2, results2) => {
       if (err2) {
-        return res.status(400).json({
+        return res.status(500).json({
           message: err2.message,
           sql: err2.sql
         })
@@ -31,11 +31,11 @@ router.post('/new', validateRequest, (req, res) => {
         const { family_birthday, ...member } = results2[0]
         const tempDate = family_birthday.toLocaleDateString('fr-FR').split('-').reverse().join('/')
         member.family_birthday = tempDate
-        return res.status(200)
+        return res.status(201)
           .set('location', location)
           .json({ member })
       } else {
-        return res.status(200)
+        return res.status(201)
           .set('location', location)
           .json({ results2 })
       }
@@ -49,14 +49,14 @@ router.put('/update', validateRequest, (req, res) => {
 
   connection.query('UPDATE family_member SET ? WHERE id = ?', [formData, formData.id], (err, results) => {
     if (err) {
-      return res.status(400).json({
+      return res.status(500).json({
         message: err.message,
         sql: err.sql
       })
     }
     connection.query('SELECT * FROM family_member WHERE id = ?', formData.id, (err2, results2) => {
       if (err2) {
-        return res.status(400).json({
+        return res.status(500).json({
           message: err2.message,
           sql: err2.sql
         })

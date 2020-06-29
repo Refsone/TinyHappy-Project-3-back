@@ -1,7 +1,7 @@
 const Joi = require('joi')
 
 const id = Joi.number().integer().min(1).required()
-const nameNotRequired = Joi.string().min(2).max(30).allow('')
+const nameNotRequired = Joi.string().min(2).max(30).allow('', null)
 const nameRequired = Joi.string().min(2).max(30).required()
 const birthdayDate = Joi.date().greater('1-1-1920').less('now').allow('', null)
 const color = Joi.number().integer().min(1).max(1000).required('')
