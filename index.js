@@ -15,6 +15,7 @@ app.use('/colors', routes.colors)
 app.use('/family', routes.family)
 app.use('/moments', routes.moments)
 app.use('/users', routes.users)
+app.use('/users/login', routes.login)
 
 app.listen(process.env.PORT, (err) => {
   if (err) {
