@@ -13,7 +13,7 @@ router.post('/', validateRequest, (req, res) => {
 
   connection.query('INSERT INTO family_member SET ?', formData, (err, results) => {
     if (err) {
-      res.status(400).send('An error is occured when created a new member' + err)
+      res.status(500).send('An error is occured when created a new member' + err)
     } else {
       console.log('req ok')
       res.status(201).send('New family user created')
