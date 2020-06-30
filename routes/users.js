@@ -33,24 +33,32 @@ router.get('/:id/moments', (req, res) => {
       let prevText = ''
       let prevName = []
       const idToDrop = []
-      const moments = results.map((moment, id) => {
-        const familyFirstname = { firstname: moment.family_firstname, color: moment.color }
-        if (moment.moment_text === prevText) {
-          idToDrop.push(id - 1)
-          moment.firstname_color = prevName.concat(familyFirstname)
-        } else {
-          moment.firstname_color = [familyFirstname]
-        }
+      const moments = results
+        .map((moment, id) => {
+          // console.log(moment)
+          // console.log('ID', id)
+          const familyFirstname = { firstname: moment.family_firstname, color: moment.color }
+          if (moment.moment_text === prevText) {
+            idToDrop.push(id - 1)
+            // console.log(idToDrop)
+            moment.firstname_color = prevName.concat(familyFirstname)
+          } else {
+            moment.firstname_color = [familyFirstname]
+          }
 
-        prevText = moment.moment_text
-        prevName = moment.firstname_color
-        delete moment.family_firstname
-        delete moment.color
+          prevText = moment.moment_text
+          prevName = moment.firstname_color
+          delete moment.family_firstname
+          delete moment.color
 
-        return moment
-      })
+          return moment
+        })
+        .filter((elt, id) => idToDrop.indexOf(id) === -1)
 
-      idToDrop.map(elt => moments.splice(elt, 1))
+      // idToDrop.map((elt) => {
+      //   moments.splice(elt, 1)
+      //   console.log(moments)
+      // })
       res.json(moments)
     }
   })
