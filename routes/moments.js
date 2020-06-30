@@ -13,4 +13,31 @@ router.put('/', (req, res) => {
   })
 })
 
+router.post('/create', (req, res) => {
+  console.log(req.body)
+  const dataMoment = req.body
+  const idFamilyMember = req.body.family_id
+  delete dataMoment.family_id
+  connection.query('INSERT INTO moment SET ?', [dataMoment], (err, results) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send('Erreur lors de l\'ajout du moment')
+    } else {
+      const sql = 'INSERT INTO family_moment VALUES ?'
+      const sqlValues = []
+      idFamilyMember.map(id => {
+        sqlValues.push([id, results.insertId])
+      })
+      connection.query(sql, [sqlValues], (err, results) => {
+        if (err) {
+          console.log(err)
+          res.status(500).send('Erreur lors de l\'ajout du moment')
+        } else {
+          res.sendStatus(200)
+        }
+      })
+    }
+  })
+})
+
 module.exports = router
