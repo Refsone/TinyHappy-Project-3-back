@@ -1,7 +1,7 @@
 const express = require('express')
 
 const router = express.Router()
-const connection = require('../conf')
+const { connection } = require('../conf')
 
 router.get('/:id', (req, res) => {
   connection.query('SELECT user_firstname, user_lastname, user_birthday, color FROM user JOIN color_family ON color_family.id=user.color_family_id WHERE user.id = ?', [req.params.id], (err, results) => {

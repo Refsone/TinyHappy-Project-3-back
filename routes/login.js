@@ -1,8 +1,10 @@
 const express = require('express')
+const router = express.Router()
+
+const { connection, secret } = require('../conf')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const router = express.Router()
-const { connection, secret } = require('../conf')
+
 const { verifyEmail } = require('./services/verif.service')
 
 const checkingtUser = (req, res, next) => {
@@ -27,7 +29,7 @@ const checkingtUser = (req, res, next) => {
 
 const generateToken = (req, res, next) => {
   const token = jwt.sign(
-    { user_mail: req.user.user_mail, user_password: req.user_password },
+    { id: req.user.id },
     secret,
     { algorithm: 'RS256' }
   )
