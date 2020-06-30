@@ -1,12 +1,12 @@
 const colors = require('./colors')
-const family = require('./family')
+const families = require('./families')
 const moments = require('./moments')
 const share = require('./share')
 const users = require('./users')
 
 module.exports = {
   colors,
-  family,
+  families,
   moments,
   share,
   users

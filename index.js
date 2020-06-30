@@ -12,7 +12,7 @@ app.use(express.urlencoded({
 app.use(cors('*'))
 
 app.use('/colors', routes.colors)
-app.use('/family', routes.family)
+app.use('/families', routes.families)
 app.use('/moments', routes.moments)
 app.use('/users', routes.users)
 
