@@ -8,17 +8,17 @@ const bcrypt = require('bcryptjs')
 const { verifyEmail } = require('./services/verif.service')
 
 const checkingtUser = (req, res, next) => {
-  const userMail = req.body.userMail
-  const userPassword = req.body.userPassword
+  const email = req.body.email
+  const password = req.body.password
 
-  connection.query('SELECT *FROM user WHERE user_mail ?', [userMail], (err, result) => {
+  connection.query('SELECT *FROM user WHERE user_mail ?', email, (err, result) => {
     if (err) {
       res.status(500).send('Error while connecting to DB' + err)
     } else if (!result[0]) {
       console.log('req is ok')
       return res.status(409).send('unknown user')
     }
-    const pwdIsValid = bcrypt.compareSync(userPassword, result[0].userPassword)
+    const pwdIsValid = bcrypt.compareSync(password, result[0].password)
     if (!pwdIsValid) {
       return res.status(401).send({ auth: false, token: null })
     }
