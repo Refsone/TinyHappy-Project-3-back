@@ -1,6 +1,3 @@
 node_modules
-<<<<<<< HEAD
 .env
-=======
-conf.js
->>>>>>> fa14a3e... add gitignore
+.vscode
