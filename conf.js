@@ -1,5 +1,6 @@
 const mysql = require('mysql')
 
+const secret = process.env.JWT_SECRET
 // Setup database connection
 const connection = mysql.createConnection({
   host: process.env.DB_HOST, // db server address
@@ -8,4 +9,4 @@ const connection = mysql.createConnection({
   database: process.env.DB_NAME // db name
 })
 
-module.exports = connection
+module.exports = { connection, secret }
