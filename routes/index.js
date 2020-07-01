@@ -1,11 +1,11 @@
 const colors = require('./colors')
-const family = require('./family')
+const familyMembers = require('./family-members')
 const moments = require('./moments')
 const users = require('./users')
 
 module.exports = {
   colors,
-  family,
+  familyMembers,
   moments,
   users
 }
