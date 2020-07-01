@@ -1,10 +1,9 @@
 const express = require('express')
 const nodemailer = require('nodemailer')
 const router = express.Router()
-// const connection = require('../conf')
 
 router.post('/', (req, res) => {
-  console.log(req.body[0].moment_text)
+  // console.log(req.body[0].moment_text)
   const mailOutput = `
   You have an email
   ${req.body}
