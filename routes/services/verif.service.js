@@ -1,6 +1,6 @@
 const verifyEmail = (req, res, next) => {
-  const emailRegEx = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
-  if (!emailRegEx.test(req.body.userMail)) {
+  const emailRegEx = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/
+  if (!emailRegEx.test(req.body.user_mail)) {
     return res.status(401).send('Unauthorized user!')
   }
 

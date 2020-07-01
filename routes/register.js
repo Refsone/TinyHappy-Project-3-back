@@ -6,7 +6,7 @@ const { verifyEmail } = require('./services/verif.service')
 const router = express.Router()
 
 const checkUser = (req, res, next) => {
-  connection.query('SELECT id FROM user WHERE user_mail = ?', req.body.email, (err, result) => {
+  connection.query('SELECT id FROM user WHERE user_mail = ?', req.body.user_mail, (err, result) => {
     if (err) {
       return res.status(500).send('internal server error')
     } else if (result.length > 0) {
@@ -18,18 +18,20 @@ const checkUser = (req, res, next) => {
 
 const insertUser = (req, res, next) => {
   const user = {
-    name: req.body.name,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    password: bcrypt.hashSync(req.body.password)
+    user_firstname: req.body.user_firstname,
+    user_lastname: req.body.user_lastname,
+    user_mail: req.body.user_mail,
+    user_password: bcrypt.hashSync(req.body.user_password),
+    parameter_id: req.body.parameter_id
   }
 
   connection.query('INSERT INTO user SET ?', user, (err, result) => {
     if (err) {
+      console.log(err)
       return res.status(500).send('Cannot register the user')
     }
 
-    connection.query('SELECT id, user_firstname, user_lastname, user_mail FROM user WHERE id =?', result.insertId, (err, result) => {
+    connection.query('SELECT user_firstname, user_lastname, user_mail FROM user WHERE id = ?', result.insertId, (err, result) => {
       if (err) {
         return res.status(500).send('Internal server error')
       }

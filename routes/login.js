@@ -8,18 +8,22 @@ const bcrypt = require('bcryptjs')
 const { verifyEmail } = require('./services/verif.service')
 
 const checkingtUser = (req, res, next) => {
-  const email = req.body.email
-  const password = req.body.password
+  const userMail = req.body.user_mail
+  const userPassword = req.body.user_password
+  console.log(userMail)
+  console.log(userPassword)
 
-  connection.query('SELECT *FROM user WHERE user_mail ?', email, (err, result) => {
+  connection.query('SELECT * FROM user WHERE user_mail = ?', userMail, (err, result) => {
     if (err) {
       res.status(500).send('Error while connecting to DB' + err)
     } else if (!result[0]) {
       console.log('req is ok')
       return res.status(409).send('unknown user')
     }
-    const pwdIsValid = bcrypt.compareSync(password, result[0].password)
+    console.log(result[0])
+    const pwdIsValid = bcrypt.compareSync(userPassword, result[0].user_password)
     if (!pwdIsValid) {
+      console.log(pwdIsValid)
       return res.status(401).send({ auth: false, token: null })
     }
     req.user = result[0]
@@ -29,9 +33,10 @@ const checkingtUser = (req, res, next) => {
 
 const generateToken = (req, res, next) => {
   const token = jwt.sign(
+
     { id: req.user.id },
     secret,
-    { algorithm: 'RS256' }
+    { algorithm: 'HS256' }
   )
   res.header('Access-Control-Expose-Headers', 'x-access-token')
   res.set('x-access-token', token)
