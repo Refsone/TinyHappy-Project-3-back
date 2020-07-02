@@ -78,6 +78,22 @@ router.get('/:id/moments', (req, res) => {
   })
 })
 
+router.get('/:user_id/contacts', (req, res) => {
+  let sql = 'SELECT ctc.id, ctc.mail from contact ctc'
+  sql += ' JOIN user_contact us ON us.contact_id = ctc.id'
+  sql += ' WHERE us.user_id = ? '
+
+  connection.query(sql, req.params.user_id, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        message: err.message,
+        sql: err.sql
+      })
+    }
+    res.status(200).json({ result })
+  })
+})
+
 router.put('/update', validateRequest, (req, res) => {
   const formdata = req.body
   const id = req.body.id
