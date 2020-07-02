@@ -7,15 +7,14 @@ const app = express()
 const routes = require('./routes/index')
 
 app.use(express.json())
-app.use(express.urlencoded({
-  extended: true
-}))
+app.use(express.urlencoded({ extended: true }))
 
 app.use(cors('*'))
 
 app.use('/colors', routes.colors)
 app.use('/family-members', routes.familyMembers)
 app.use('/moments', routes.moments)
+app.use('/share', routes.share)
 app.use('/users', routes.users)
 
 app.listen(process.env.PORT, (err) => {
