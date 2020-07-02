@@ -7,6 +7,12 @@ const birthdayDate = Joi.date().greater('1-1-1920').less('now').allow('', null)
 const color = Joi.number().integer().min(1).max(1000).required()
 const email = Joi.string().email().required()
 
+// New contact
+const addNewContact = Joi.object().keys({
+  user_id: id,
+  mail: email
+})
+// New family member
 const familyAddSchema = Joi.object().keys({
   user_id: id,
   family_firstname: nameRequired,
@@ -15,7 +21,7 @@ const familyAddSchema = Joi.object().keys({
   family_birthday: birthdayDate,
   color_family_id: color
 })
-
+// Modify family member
 const familyModifySchema = Joi.object().keys({
   id: id,
   user_id: id,
@@ -25,7 +31,7 @@ const familyModifySchema = Joi.object().keys({
   family_birthday: birthdayDate,
   color_family_id: color
 })
-
+// Modify user datas
 const userModifySchema = Joi.object().keys({
   id: id,
   user_firstname: nameRequired,
@@ -35,14 +41,9 @@ const userModifySchema = Joi.object().keys({
   color_family_id: color
 })
 
-const addNewContact = Joi.object().keys({
-  user_id: id,
-  mail: email
-})
-
 module.exports = {
+  '/contacts/new': addNewContact,
   '/family-members/new': familyAddSchema,
   '/family-members/update': familyModifySchema,
-  '/users/update': userModifySchema,
-  '/contacts/new': addNewContact
+  '/users/update': userModifySchema
 }
