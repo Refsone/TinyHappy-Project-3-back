@@ -1,7 +1,7 @@
 const express = require('express')
 
-const router = express.Router()
 const connection = require('../conf')
+const router = express.Router()
 
 router.put('/', (req, res) => {
   connection.query('UPDATE moment SET moment_favorite = ? WHERE moment.id = ?', [req.body.moment_favorite, req.body.id], (err, results) => {
