@@ -3,11 +3,18 @@ const nodemailer = require('nodemailer')
 const router = express.Router()
 
 router.post('/', (req, res) => {
-  const mailOutput = `
-  You have an email
-  ${req.body}
+  console.log(req.body)
+  let mailOutput = `
+  Hey, vous avez reçu plein de moments !!
   `
-
+  req.body.map(moment => {
+    const message =
+    '<p>Auteurs : ' + moment.firstname_color.map(person => person.firstname) + '</p>' +
+    '<p>Texte : ' + moment.moment_text + '</p>' +
+    '<br>'
+    mailOutput += message
+    return mailOutput
+  })
   const transporter = nodemailer.createTransport({
     host: 'smtp-mail.outlook.com',
     port: 587,
@@ -19,9 +26,9 @@ router.post('/', (req, res) => {
   })
 
   transporter.sendMail({
-    from: '"TinyHappy 👻" <auxence_6033@hotmail.fr',
+    from: '"TinyHappy 💙" <auxence_6033@hotmail.fr',
     to: 'auxence.blondel@gmail.com',
-    subject: 'Hello ✔',
+    subject: 'Nouveaux moments!',
     text: 'Hello world?',
     html: mailOutput
   }, (err, info) => {
