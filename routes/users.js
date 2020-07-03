@@ -6,6 +6,17 @@ const router = express.Router()
 const SchemaValidator = require('../schemaValidator')
 const validateRequest = SchemaValidator(true)
 
+router.get('/', (req, res) => {
+  connection.query('SELECT user_mail, user_password FROM user', (err, results) => {
+    if (err) {
+      res.status(500).send('Erreur lors de la récupération de l\'utilisateur')
+      console.log(err)
+    } else {
+      res.json(results)
+    }
+  })
+})
+
 router.get('/:id', (req, res) => {
   connection.query('SELECT user_firstname, user_lastname, user_surname, user_birthday, color_family_id, color FROM user JOIN color_family ON color_family.id=user.color_family_id WHERE user.id = ?', [req.params.id], (err, results) => {
     if (err) {
@@ -75,6 +86,22 @@ router.get('/:id/moments', (req, res) => {
       // })
       res.json(moments)
     }
+  })
+})
+
+router.get('/:user_id/contacts', (req, res) => {
+  let sql = 'SELECT ctc.id, ctc.mail from contact ctc'
+  sql += ' JOIN user_contact us ON us.contact_id = ctc.id'
+  sql += ' WHERE us.user_id = ? '
+
+  connection.query(sql, req.params.user_id, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        message: err.message,
+        sql: err.sql
+      })
+    }
+    res.status(200).json({ result })
   })
 })
 
