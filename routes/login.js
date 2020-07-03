@@ -42,7 +42,7 @@ const generateToken = (req, res, next) => {
   res.status(200).send({ auth: true })
 }
 
-const tokenIsValid = async (req, res) => {
+/* const tokenIsValid = async (req, res) => {
   const userIsRegistered = req.body.user
   try {
     const token = req.header('x-auth-token')
@@ -58,8 +58,8 @@ const tokenIsValid = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message })
   }
-}
+} */
 
-router.post('/', verifyEmail, checkingtUser, generateToken, tokenIsValid)
+router.post('/', verifyEmail, checkingtUser, generateToken)
 
 module.exports = router

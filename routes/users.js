@@ -1,13 +1,13 @@
 const express = require('express')
 
-const connection = require('../conf')
+const { connection } = require('../conf')
 const router = express.Router()
 
 const SchemaValidator = require('../schemaValidator')
 const validateRequest = SchemaValidator(true)
 
 router.get('/:id', (req, res) => {
-  connection.query('SELECT user_firstname, user_lastname, user_surname, user_birthday, color_family_id, color FROM user JOIN color_family ON color_family.id=user.color_family_id WHERE user.id = ?', [req.params.id], (err, results) => {
+  connection.query('SELECT user_firstname, user_lastname, user_firstname, user_birthday, color_family_id, color FROM user JOIN color_family ON color_family.id=user.color_family_id WHERE user.id = ?', [req.params.id], (err, results) => {
     if (err) {
       res.status(500).send('Erreur lors de la récupération de l\'utilisateur')
       console.log(err)
