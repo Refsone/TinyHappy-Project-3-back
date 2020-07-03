@@ -20,17 +20,12 @@
   "license": "ISC",
   "dependencies": {
     "@hapi/joi": "^17.1.1",
-    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "joi": "^14.3.1",
-    "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
-    "mysql": "^2.18.1",
-    "nodemon": "^2.0.4",
-    "nodemailer": "^6.4.10",
-    "moment": "^2.27.0"
+    "mysql": "^2.18.1"
   },
   "devDependencies": {
     "husky": "^4.2.5",
