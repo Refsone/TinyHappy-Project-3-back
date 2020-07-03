@@ -12,6 +12,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cors('*'))
 
 app.use('/colors', routes.colors)
+app.use('/contacts', routes.contacts)
 app.use('/family-members', routes.familyMembers)
 app.use('/moments', routes.moments)
 app.use('/share', routes.share)
