@@ -8,4 +8,3 @@ const verifyEmail = (req, res, next) => {
 }
 
 module.exports = { verifyEmail }
-

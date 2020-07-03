@@ -1,5 +1,4 @@
 const express = require('express')
-const bcrypt = require('bcryptjs')
 const { connection } = require('../conf')
 const { verifyEmail } = require('./services/verif.service')
 
