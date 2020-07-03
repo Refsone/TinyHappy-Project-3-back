@@ -33,7 +33,6 @@ const checkingtUser = (req, res, next) => {
 
 const generateToken = (req, res, next) => {
   const token = jwt.sign(
-
     { id: req.user.id },
     secret,
     { algorithm: 'HS256' }
@@ -43,6 +42,24 @@ const generateToken = (req, res, next) => {
   res.status(200).send({ auth: true })
 }
 
-router.post('/', verifyEmail, checkingtUser, generateToken)
+const tokenIsValid = async (req, res) => {
+  const userIsRegistered = req.body.user
+  try {
+    const token = req.header('x-auth-token')
+    if (!token) return res.json(false)
+
+    const verified = jwt.verify(token, secret)
+    if (!verified) return res.json(false)
+
+    const user = await userIsRegistered.findById(verified.id)
+    if (!user) return res.json(false)
+
+    return res.json(true)
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+}
+
+router.post('/', verifyEmail, checkingtUser, generateToken, tokenIsValid)
 
 module.exports = router
