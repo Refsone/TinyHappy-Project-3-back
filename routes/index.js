@@ -1,15 +1,17 @@
 const colors = require('./colors')
-const family = require('./family')
+const familyMembers = require('./family-members')
 const moments = require('./moments')
+const share = require('./share')
 const users = require('./users')
 const login = require('./login')
-const register = require('./register')
+const signUp = require('./signUp')
 
 module.exports = {
   colors,
-  family,
+  familyMembers,
   moments,
   users,
-  register,
-  login
+  login,
+  signUp,
+  share
 }

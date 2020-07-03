@@ -1,22 +1,23 @@
 require('dotenv').config()
+
 const cors = require('cors')
 const express = require('express')
 const app = express()
+
 const routes = require('./routes/index')
 
 app.use(express.json())
-app.use(express.urlencoded({
-  extended: true
-}))
+app.use(express.urlencoded({ extended: true }))
 
 app.use(cors('*'))
 
 app.use('/colors', routes.colors)
-app.use('/family', routes.family)
+app.use('/family-members', routes.familyMembers)
 app.use('/moments', routes.moments)
+app.use('/share', routes.share)
 app.use('/users', routes.users)
 app.use('/users/login', routes.login)
-app.use('/register', routes.register)
+app.use('/sign-up', routes.signUp)
 
 app.listen(process.env.PORT, (err) => {
   if (err) {
