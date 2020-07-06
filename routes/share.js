@@ -31,12 +31,6 @@ router.post('/', (req, res) => {
     subject: 'Nouveaux moments!',
     text: 'Hello world?',
     html: mailOutput
-  }, (err, info) => {
-    if (err) {
-      console.log(err)
-    } else {
-      console.log(info.response)
-    }
   })
 })
 module.exports = router
