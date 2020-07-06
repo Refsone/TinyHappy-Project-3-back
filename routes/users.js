@@ -60,8 +60,6 @@ router.get('/:id/moments', (req, res) => {
       const idToDrop = []
       const moments = results
         .map((moment, id) => {
-          // console.log(moment)
-          // console.log('ID', id)
           const familyFirstname = { firstname: moment.family_firstname, color: moment.color }
           if (moment.moment_text === prevText) {
             idToDrop.push(id - 1)
@@ -79,11 +77,6 @@ router.get('/:id/moments', (req, res) => {
           return moment
         })
         .filter((elt, id) => idToDrop.indexOf(id) === -1)
-
-      // idToDrop.map((elt) => {
-      //   moments.splice(elt, 1)
-      //   console.log(moments)
-      // })
       res.json(moments)
     }
   })

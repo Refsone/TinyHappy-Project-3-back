@@ -42,24 +42,6 @@ const generateToken = (req, res, next) => {
   res.status(200).send({ auth: true })
 }
 
-/* const tokenIsValid = async (req, res) => {
-  const userIsRegistered = req.body.user
-  try {
-    const token = req.header('x-auth-token')
-    if (!token) return res.json(false)
-
-    const verified = jwt.verify(token, secret)
-    if (!verified) return res.json(false)
-
-    const user = await userIsRegistered.findById(verified.id)
-    if (!user) return res.json(false)
-
-    return res.json(true)
-  } catch (err) {
-    res.status(500).json({ error: err.message })
-  }
-} */
-
 router.post('/', verifyEmail, checkingtUser, generateToken)
 
 module.exports = router
