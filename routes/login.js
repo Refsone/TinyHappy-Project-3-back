@@ -16,7 +16,6 @@ const checkingtUser = (req, res, next) => {
     } else if (!result[0]) {
       return res.status(409).send('unknown user')
     }
-    console.log(result[0])
     const pwdIsValid = bcrypt.compareSync(userPassword, result[0].user_password)
     if (!pwdIsValid) {
       return res.status(401).send({ auth: false, token: null })
