@@ -1,20 +1,20 @@
 const express = require('express')
 const hbs = require('nodemailer-express-handlebars')
+const Moment = require('moment')
+require('moment/locale/fr')
 const nodemailer = require('nodemailer')
 const router = express.Router()
 
 router.post('/', (req, res) => {
-  let mailOutput = `
-  Hey, vous avez reçu plein de moments !!
-  `
-  req.body.map(moment => {
-    const message =
-      '<p>Auteurs : ' + moment.firstname_color.map(person => person.firstname) + '</p>' +
-      '<p>Texte : ' + moment.moment_text + '</p>' +
-      '<br>'
-    mailOutput += message
-    return mailOutput
+  Moment.locale('fr')
+  const momentsData = req.body.map(moment => {
+    moment.moment_event_date = Moment(moment.moment_event_date).format('LL')
+    if (moment.type === 'milestone') {
+      delete moment.type
+    }
+    return moment
   })
+  console.log(momentsData)
 
   const transporter = nodemailer.createTransport({
     host: 'smtp-mail.outlook.com',
@@ -38,7 +38,8 @@ router.post('/', (req, res) => {
     // html: mailOutput,
     template: 'moments',
     context: {
-      moment: req.body
+      userName: 'Jérôme',
+      moments: momentsData
     }
   }
 

@@ -5,10 +5,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic);
+
+        *,
+        ::before,
+        ::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        .top-message {
+            color: #7180AC;
+            font-size: 12px;
+        }
+
+        .Posts {
+            text-align: center;
+            width: 600px;
+            margin: 50px auto;
+        }
+
+        .Posts .moment-date {
+            color: #7180AC;
+            margin-top: 32px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .CardPost {
+            max-width: 600px;
+            text-align: center;
+            border: solid 2px #E9EFFA;
+            border-radius: 0.5rem;
+            padding: 16px;
+        }
+
+        .CardPost .block-names {
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .CardPost .family-name {
+            display: inline-block;
+            margin: 0 0.25rem 0 0.25rem;
+            border-radius: 1rem;
+            font-size: 0.62rem;
+            padding: 0.25rem 1rem;
+            color: #2E3080;
+            font-weight: bold;
+            border-radius: 28px;
+            text-transform: uppercase;
+        }
+
+        .CardPost h4 {
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            font-style: italic;
+            color: #2E3080;
+        }
+
+        .CardPost .context {
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            color: #7180AC;
+        }
+    </style>
 </head>
 
+
 <body>
-    <h1 id="title">Template working !</h1>
+    <p class="top-message">Hello,</p>
+    <br>
+    <p class="top-message">{{userName}} vous partage ses meilleurs Moments, ainsi que ceux de ...</p>
+    <div class="Posts">
+        {{#each moments}}
+        <p class="moment-date">{{this.moment_event_date}}</p>
+        {{#if this.type}}
+        <div class="CardPost" style='border-left: 0.4rem solid #91E9FE'>
+            {{else}}
+            <div class="CardPost" style='border-left: 0.4rem solid #D3FF9B'>
+                {{/if}}
+                <div class="block-names">
+                    {{#each this.firstname_color}}
+                    <p class="family-name" style='background-color:{{this.color}}'>{{this.firstname}}</p>
+                    {{/each}}
+                </div>
+                <h4>{{this.moment_text}}</h4>
+                {{#if this.moment_context}}
+                <p class="context">{{this.moment_context}}</p>
+                {{/if}}
+            </div>
+            {{/each}}
+        </div>
+    </div>
+
 </body>
 
 </html>
