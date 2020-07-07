@@ -1,25 +1,18 @@
-const generator = require('generate-password')
 const mailjet = require('node-mailjet')
-  .connect('5ea1ae1779664c4a9937feebe7a39f35', 'b3e1969e5e19f60304edb9eeaf7d9fb3')
+  .connect(process.env.MAILJET_AUTH1, process.env.MAILJET_AUTH2)
 
-// Generate a custom password
-const tempPassword = generator.generate({
-  length: 12,
-  numbers: true,
-  strict: true
-})
-
-let message = 'Hello,<br /><br />'
-message += 'Vous avez perdu votre mot de passe ?<br />'
-message += 'Connectez - vous de nouveau avec ce mot de passe temporaire dans les XX prochaines minutes.<br />'
-message += `${tempPassword}<br /><br />`
-message += 'Vous devrez le modifier une fois connectée.<br /><br />'
-message += 'Si vous n\'êtes pas à l\'origine de ce changement de mot de passe, merci de nous contacter directement à l\'adresse hello@tinyhappy.app.'
-message += '<br /><br />Jérôme de Tinyhappy'
-
-const sendTempPasswordByMail = () => (req, res, next) => {
-  mailjet
-    .post('send', { version: 'v3.1' })
+const sendTempPassword = (req, res, next) => {
+  const { name, user_mail, tempPassword } = req.body
+  // Define the message to send
+  let message = `Hello ${name},<br /><br />`
+  message += 'Vous avez perdu votre mot de passe ?<br />'
+  message += 'Connectez - vous de nouveau avec ce mot de passe temporaire dans les XX prochaines minutes.<br />'
+  message += `${tempPassword}<br /><br />`
+  message += 'Vous devrez le modifier une fois connectée.<br /><br />'
+  message += 'Si vous n\'êtes pas à l\'origine de ce changement de mot de passe, merci de nous contacter directement à l\'adresse hello@tinyhappy.app.'
+  message += '<br /><br />Jérôme de Tinyhappy'
+  // define headers of the mail and send it
+  mailjet.post('send', { version: 'v3.1' })
     .request({
       Messages: [
         {
@@ -29,8 +22,8 @@ const sendTempPasswordByMail = () => (req, res, next) => {
           },
           To: [
             {
-              Email: mail,
-              Name: 'Jérôme' // Todo: Modify with the current user
+              Email: user_mail,
+              Name: name
             }
           ],
           Subject: 'Réinitialiser votre mot de passe 🔑',
@@ -39,10 +32,9 @@ const sendTempPasswordByMail = () => (req, res, next) => {
         }
       ]
     })
-    .catch((err) => {
-      return res.status(400).send(err.statusCode)
+    .catch(err => res.sendStatus(400).json({ err }))
+    .then(() => {
+      return res.status(200).send('The new password is send')
     })
-    .then(next())
 }
-
-module.exports = sendTempPasswordByMail
+module.exports = { sendTempPassword }
