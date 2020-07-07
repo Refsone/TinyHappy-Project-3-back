@@ -5,7 +5,7 @@ const { connection, secret } = require('../conf')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
-const { verifyEmail } = require('./services/verif.service')
+const { verifyEmail } = require('../service/verif.service')
 
 const checkingtUser = (req, res, next) => {
   const userMail = req.body.user_mail
