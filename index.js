@@ -15,10 +15,10 @@ app.use('/colors', routes.colors)
 app.use('/contacts', routes.contacts)
 app.use('/family-members', routes.familyMembers)
 app.use('/moments', routes.moments)
+app.use('/sign-up', routes.signUp)
 app.use('/share', routes.share)
 app.use('/users', routes.users)
 app.use('/users/login', routes.login)
-app.use('/sign-up', routes.signUp)
 
 app.listen(process.env.PORT, (err) => {
   if (err) {
