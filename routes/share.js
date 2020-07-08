@@ -1,21 +1,23 @@
 const express = require('express')
 const hbs = require('nodemailer-express-handlebars')
 const Moment = require('moment')
+const path = require('path')
 require('moment/locale/fr')
 const nodemailer = require('nodemailer')
 const router = express.Router()
 
 router.post('/', (req, res) => {
   Moment.locale('fr')
-  const momentsData = req.body.map(moment => {
+
+  // convert date and delete milestone for verification into .handlebars
+  const momentsData = req.body.momentsToSend.map(moment => {
     moment.moment_event_date = Moment(moment.moment_event_date).format('LL')
     if (moment.type === 'milestone') {
       delete moment.type
     }
     return moment
   })
-  console.log(momentsData)
-
+  const lenghtOtherNames = req.body.authorsSelect.length
   const transporter = nodemailer.createTransport({
     host: 'smtp-mail.outlook.com',
     port: 587,
@@ -27,18 +29,20 @@ router.post('/', (req, res) => {
   })
 
   transporter.use('compile', hbs({
-    viewEngine: 'express-handlebars',
-    viewPath: './views'
+    viewEngine: { layoutsDir: './views', engine: 'express-handlebars', defaultLayout: false },
+
+    viewPath: path.resolve(__dirname, '../views')
   }))
 
   const mailOptions = {
-    from: '"TinyHappy 💙" <auxence_6033@hotmail.fr',
-    to: 'auxence.blondel@gmail.com',
-    subject: 'Nouveaux moments!',
-    // html: mailOutput,
+    from: `"${req.body.userName} via TinyHappy" <auxence_6033@hotmail.fr`,
+    to: req.body.selectedMail.join(', '),
+    subject: `${req.body.userName} vous partage tous ses meilleurs Moments !`,
     template: 'moments',
     context: {
-      userName: 'Jérôme',
+      userName: req.body.userName,
+      lastOtherNames: req.body.authorsSelect[lenghtOtherNames - 1],
+      otherNames: req.body.authorsSelect.splice(0, lenghtOtherNames - 1),
       moments: momentsData
     }
   }
