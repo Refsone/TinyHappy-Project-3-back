@@ -136,5 +136,5 @@ router.put('/update', verifyToken, validateRequest, (req, res) => {
     })
   })
 })
-router.get('/', verifyToken)
+router.put('/', verifyToken)
 module.exports = router
