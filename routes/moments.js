@@ -37,5 +37,5 @@ router.post('/create', verifyToken, (req, res) => {
     }
   })
 })
-router.post('/', verifyToken)
+
 module.exports = router

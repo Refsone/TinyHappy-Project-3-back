@@ -13,9 +13,9 @@ const verifyEmail = (req, res, next) => {
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization
   console.log(req.headers)
-  if (typeof authHeader !== 'undefined') {
-    const tokenTH = authHeader.split(' ')[1]
-    jwt.verify(tokenTH, secret, (err) => {
+  if (authHeader) {
+    const token = authHeader.split(' ')[1]
+    jwt.verify(token, secret, (err, result) => {
       if (err) {
         return res.status(403).json(err)
       }

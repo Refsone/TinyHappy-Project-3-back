@@ -95,5 +95,5 @@ router.delete('/:id', verifyToken, (req, res) => {
     })
   })
 })
-router.get('/', verifyToken)
+
 module.exports = router
