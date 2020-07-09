@@ -59,7 +59,7 @@ router.get('/:id/moments', (req, res) => {
   JOIN moment_type ON moment.moment_type_id=moment_type.id
   WHERE moment.user_id = ?
   GROUP BY moment.id, fme.id
-  ORDER BY moment.id ASC
+  ORDER BY moment_event_date DESC, moment.id DESC
   `
   connection.query(sql, [req.params.id], (err, results) => {
     if (err) {
@@ -78,7 +78,6 @@ router.get('/:id/moments', (req, res) => {
           } else {
             moment.firstname_color = [familyFirstname]
           }
-
           prevText = moment.moment_text
           prevName = moment.firstname_color
           delete moment.family_firstname
