@@ -46,6 +46,7 @@
             border: solid 2px #E9EFFA;
             border-radius: 0.5rem;
             padding: 16px;
+            background-color: #fff;
         }
 
         .CardPost .block-names {
@@ -67,7 +68,8 @@
 
         .CardPost h4 {
             margin-top: 1rem;
-            font-size: 0.75rem;
+            font-size: 14px;
+            font-weight: normal;
             font-style: italic;
             color: #2E3080;
         }
@@ -77,6 +79,12 @@
             margin-top: 0.5rem;
             color: #7180AC;
         }
+
+        @media (forced-colors: active) {
+            .CardPost {
+                background-color: white;
+            }
+        }
     </style>
 </head>
 
@@ -84,9 +92,9 @@
 <body>
     <p class="top-message">Hello,</p>
     <br>
-    <p class="top-message">{{userName}} vous partage ses meilleurs Moments, ainsi que ceux de 
+    <p class="top-message">{{userName}} vous partage ses meilleurs Moments, ainsi que ceux de
         {{#each otherNames}}
-            {{this}} et
+        {{this}} et
         {{/each}}
         {{lastOtherNames}}.
     </p>
