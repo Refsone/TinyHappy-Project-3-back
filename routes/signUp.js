@@ -1,6 +1,6 @@
 const express = require('express')
 const bcrypt = require('bcryptjs')
-const connection = require('../conf')
+const { connection } = require('../conf')
 const { verifyEmail } = require('../service/verif.service')
 
 const router = express.Router()
