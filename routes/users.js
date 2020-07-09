@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
 
 router.get('/tempPwd/', (req, res) => {
   const { mail } = req.query
-
+  // Verify if the mail exist on the database
   connection.query('SELECT user_temp_password, temp_password_limit FROM user WHERE user_mail = ?', mail, (err, result) => {
     if (err) {
       return res.status(500).json({
@@ -32,15 +32,21 @@ router.get('/tempPwd/', (req, res) => {
         message: 'The email does not exist'
       })
     }
-    bcrypt.compare(req.query.tempPwd, result[0].user_temp_password)
-      .then(ok => {
+    // Verify is the temporary password match with bdd password
+    bcrypt.compare(req.query.tempPwd, result[0].user_temp_password, (err, ok) => {
+      if (err) {
+        return res.status(500).send('Error when compare the password')
+      }
+      if (ok) {
         const date = new Date().getTime()
+        // Verify if the temp password is still available
         if (result[0].temp_password_limit < date) {
           return res.status(403).send('The limit of the temporary password is over')
         }
         return res.status(200).send('Temporary password is valid')
-      })
-      .catch(res.status(404).send('The temporary password is not valid'))
+      }
+      return res.status(404).send('Temporary password is not valid')
+    })
   })
 })
 
