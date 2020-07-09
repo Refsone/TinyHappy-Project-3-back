@@ -1,8 +1,9 @@
 const { connection } = require('../conf')
 const express = require('express')
 const router = express.Router()
+const { verifyToken } = require('../service/verif.service')
 
-router.get('/', (req, res) => {
+router.get('/', verifyToken, (req, res) => {
   connection.query('SELECT * FROM color_family LIMIT 8', (err, results) => {
     if (err) {
       res.status(500).json({
@@ -14,5 +15,5 @@ router.get('/', (req, res) => {
     }
   })
 })
-
+router.get('/', verifyToken)
 module.exports = router
