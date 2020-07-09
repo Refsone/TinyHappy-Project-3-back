@@ -1,9 +1,9 @@
 const express = require('express')
 const nodemailer = require('nodemailer')
 const router = express.Router()
+const { verifyToken } = require('../service/verif.service')
 
-router.post('/', (req, res) => {
-  console.log(req.body)
+router.post('/', verifyToken, (req, res) => {
   let mailOutput = `
   Hey, vous avez reçu plein de moments !!
   `
@@ -31,12 +31,7 @@ router.post('/', (req, res) => {
     subject: 'Nouveaux moments!',
     text: 'Hello world?',
     html: mailOutput
-  }, (err, info) => {
-    if (err) {
-      console.log(err)
-    } else {
-      console.log(info.response)
-    }
   })
 })
+
 module.exports = router

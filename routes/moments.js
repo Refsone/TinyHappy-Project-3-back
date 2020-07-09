@@ -1,9 +1,10 @@
 const express = require('express')
 
-const connection = require('../conf')
+const { connection } = require('../conf')
 const router = express.Router()
+const { verifyToken } = require('../service/verif.service')
 
-router.put('/', (req, res) => {
+router.put('/', verifyToken, (req, res) => {
   connection.query('UPDATE moment SET moment_favorite = ? WHERE moment.id = ?', [req.body.moment_favorite, req.body.id], (err, results) => {
     if (err) {
       res.status(500).send('Erreur lors de la modification du moment')
