@@ -4,9 +4,10 @@ const { connection } = require('../conf')
 const SchemaValidator = require('../schemaValidator')
 
 const validateRequest = SchemaValidator(true)
+const { verifyToken } = require('../service/verif.service')
 
 // Add a new family member
-router.post('/new', validateRequest, (req, res) => {
+router.post('/new', verifyToken, validateRequest, (req, res) => {
   const formData = req.body
 
   connection.query('INSERT INTO family_member SET ?', formData, (err, results) => {
@@ -44,7 +45,7 @@ router.post('/new', validateRequest, (req, res) => {
 })
 
 // Modify a family member
-router.put('/update', validateRequest, (req, res) => {
+router.put('/update', verifyToken, validateRequest, (req, res) => {
   const formData = req.body
 
   connection.query('UPDATE family_member SET ? WHERE id = ?', [formData, formData.id], (err, results) => {
@@ -81,7 +82,7 @@ router.put('/update', validateRequest, (req, res) => {
 })
 
 // Delete a member
-router.delete('/:id', (req, res) => {
+router.delete('/:id', verifyToken, (req, res) => {
   connection.query('DELETE from family_member WHERE id = ?', req.params.id, (err, result) => {
     if (err) {
       return res.status(500).json({

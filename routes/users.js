@@ -5,8 +5,9 @@ const router = express.Router()
 
 const SchemaValidator = require('../schemaValidator')
 const validateRequest = SchemaValidator(true)
+const { verifyToken } = require('../service/verif.service')
 
-router.get('/', (req, res) => {
+router.get('/', verifyToken, (req, res) => {
   connection.query('SELECT user_mail, user_password FROM user', (err, results) => {
     if (err) {
       res.status(500).send('Erreur lors de la récupération de l\'utilisateur')
@@ -17,7 +18,7 @@ router.get('/', (req, res) => {
   })
 })
 
-router.get('/:id', (req, res) => {
+router.get('/:id', verifyToken, (req, res) => {
   connection.query('SELECT user_firstname, user_lastname, user_firstname, user_birthday, color_family_id, color FROM user JOIN color_family ON color_family.id=user.color_family_id WHERE user.id = ?', [req.params.id], (err, results) => {
     if (err) {
       res.status(500).send('Erreur lors de la récupération de l\'utilisateur')
@@ -28,7 +29,7 @@ router.get('/:id', (req, res) => {
   })
 })
 
-router.get('/:id/family', (req, res) => {
+router.get('/:id/family', verifyToken, (req, res) => {
   connection.query('SELECT fa.id AS member_id, family_firstname, family_lastname, family_surname, family_birthday, color FROM family_member fa JOIN color_family ON color_family.id=fa.color_family_id WHERE fa.user_id = ?', [req.params.id], (err, results) => {
     if (err) {
       console.log(err)
@@ -38,7 +39,7 @@ router.get('/:id/family', (req, res) => {
     }
   })
 })
-router.get('/:user_id/family-members/:member_id', (req, res) => {
+router.get('/:user_id/family-members/:member_id', verifyToken, (req, res) => {
   connection.query('SELECT id, family_firstname, family_lastname, family_surname, family_birthday, color_family_id FROM family_member WHERE id = ?', [req.params.member_id], (err, results) => {
     if (err) {
       return res.status(500).json({
@@ -50,7 +51,7 @@ router.get('/:user_id/family-members/:member_id', (req, res) => {
   })
 })
 
-router.get('/:id/moments', (req, res) => {
+router.get('/:id/moments', verifyToken, (req, res) => {
   connection.query('SELECT moment.id, moment_text, moment_context, moment_favorite, moment_event_date, family_firstname, type, user_isPresent, color FROM moment JOIN family_moment ON moment_id=moment.id JOIN family_member fme ON family_member_id=fme.id JOIN color_family ON color_family_id=color_family.id JOIN moment_type ON moment.moment_type_id=moment_type.id WHERE moment.user_id = ? GROUP BY moment.id, fme.id ORDER BY moment_event_date DESC', [req.params.id], (err, results) => {
     if (err) {
       res.status(500).send('Erreur lors de la récupération des moments')
@@ -82,7 +83,7 @@ router.get('/:id/moments', (req, res) => {
   })
 })
 
-router.get('/:user_id/contacts', (req, res) => {
+router.get('/:user_id/contacts', verifyToken, (req, res) => {
   let sql = 'SELECT ctc.id, ctc.mail from contact ctc'
   sql += ' JOIN user_contact us ON us.contact_id = ctc.id'
   sql += ' WHERE us.user_id = ? '
@@ -98,7 +99,7 @@ router.get('/:user_id/contacts', (req, res) => {
   })
 })
 
-router.put('/update', validateRequest, (req, res) => {
+router.put('/update', verifyToken, validateRequest, (req, res) => {
   const formdata = req.body
   const id = req.body.id
   connection.query('UPDATE user SET ? WHERE id = ?', [formdata, id], (err, result) => {
@@ -115,7 +116,7 @@ router.put('/update', validateRequest, (req, res) => {
           sql: err2.sql
         })
       }
-      const { user_password, user_mail, parameter_id, user_temp_password, ...dataUser } = result2[0]
+      const { user_password, user_mail, user_temp_password, ...dataUser } = result2[0]
 
       const host = req.get('host')
       const location = `http://${host}/users/family-members/${id}`
