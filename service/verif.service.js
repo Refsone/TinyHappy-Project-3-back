@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const { secret } = require('../conf')
 
 const verifyEmail = (req, res, next) => {
-  const emailRegEx = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/
+  const emailRegEx = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/
   if (!emailRegEx.test(req.body.user_mail)) {
     console.log('regex')
     return res.status(401).send('Unauthorized user!')
@@ -12,7 +12,6 @@ const verifyEmail = (req, res, next) => {
 
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization
-  console.log(req.headers)
   if (authHeader) {
     const token = authHeader.split(' ')[1]
     jwt.verify(token, secret, (err, result) => {

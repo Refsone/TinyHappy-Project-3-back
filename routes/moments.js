@@ -14,12 +14,13 @@ router.put('/', verifyToken, (req, res) => {
   })
 })
 
-router.post('/create', verifyToken, (req, res) => {
+router.post('/create', (req, res) => {
   const dataMoment = req.body
   const idFamilyMember = req.body.family_id
   delete dataMoment.family_id
   connection.query('INSERT INTO moment SET ?', [dataMoment], (err, results) => {
     if (err) {
+      console.log(err)
       res.status(500).send('Erreur lors de l\'ajout du moment')
     } else {
       const sql = 'INSERT INTO family_moment VALUES ?'
