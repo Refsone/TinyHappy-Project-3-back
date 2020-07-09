@@ -6,5 +6,12 @@ const verifyEmail = (req, res, next) => {
   }
   next()
 }
+const verif = (req, res, next) => {
+  const token = req.body.token
+  const decoded = jwt.verify(token, 'mySecretSalt')
+  console.log(decoded)
+  
+  next()
+}
 
-module.exports = { verifyEmail }
+module.exports = { verifyEmail, verif }
