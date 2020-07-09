@@ -6,7 +6,7 @@ const sendTempPassword = (req, res, next) => {
   // Define the message to send
   let message = `Hello ${name},<br /><br />`
   message += 'Vous avez perdu votre mot de passe ?<br />'
-  message += `Connectez-vous de nouveau avec ce mot de passe temporaire dans les ${timeExp / 60} prochaines minutes.<br /><br />`
+  message += `Connectez-vous de nouveau avec ce mot de passe temporaire dans les ${timeExp / 60000} prochaines minutes.<br /><br />`
   message += `<b>${tempPassword}</b><br /><br />`
   message += 'Vous devrez le modifier une fois connectée.<br /><br />'
   message += '<a href=\'http://localhost:3000/onboarding/resetpwd\' title=\'Reset your password\'>Click here to reset your password</a><br /><br />'

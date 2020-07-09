@@ -10,12 +10,13 @@ const createTempPassword = (req, res, next) => {
     strict: true
   })
   req.body.tempPassword = generatePwd
-  req.body.timeExp = (10 * 60) // Define here the number of minutes the tempory password is valid
+  req.body.timeExp = (10 * 60000) // Define here the number of minutes the tempory password is valid
   next()
 }
 // Add the new password and the expiration time to the bdd
 const addTempPassword = (req, res, next) => {
-  const expireTime = new Date().getTime() + req.body.timeExp // Define an expiration time for the custom password
+  let expireTime = new Date().getTime()
+  expireTime += req.body.timeExp // Define an expiration time for the custom password
   const reqData = {
     user_temp_password: bcrypt.hashSync(req.body.tempPassword),
     temp_password_limit: expireTime

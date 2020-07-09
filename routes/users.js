@@ -2,6 +2,7 @@ const express = require('express')
 
 const connection = require('../conf')
 const router = express.Router()
+const bcrypt = require('bcryptjs')
 
 const SchemaValidator = require('../schemaValidator')
 const validateRequest = SchemaValidator(true)
@@ -14,6 +15,32 @@ router.get('/', (req, res) => {
     } else {
       res.json(results)
     }
+  })
+})
+
+router.get('/tempPwd/', (req, res) => {
+  const { mail } = req.query
+
+  connection.query('SELECT user_temp_password, temp_password_limit FROM user WHERE user_mail = ?', mail, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        message: err.message,
+        sql: err.sql
+      })
+    } else if (!result[0]) {
+      return res.status(404).json({
+        message: 'The email does not exist'
+      })
+    }
+    bcrypt.compare(req.query.tempPwd, result[0].user_temp_password)
+      .then(ok => {
+        const date = new Date().getTime()
+        if (result[0].temp_password_limit < date) {
+          return res.status(403).send('The limit of the temporary password is over')
+        }
+        return res.status(200).send('Temporary password is valid')
+      })
+      .catch(res.status(404).send('The temporary password is not valid'))
   })
 })
 
