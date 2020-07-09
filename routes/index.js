@@ -5,7 +5,6 @@ const moments = require('./moments')
 const share = require('./share')
 const signUp = require('./signUp')
 const users = require('./users')
-const modifyPassword = require('./modifyPassword')
 
 module.exports = {
   colors,
@@ -14,6 +13,5 @@ module.exports = {
   moments,
   share,
   signUp,
-  users,
-  modifyPassword
+  users
 }

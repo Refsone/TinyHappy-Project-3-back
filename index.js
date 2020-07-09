@@ -18,7 +18,6 @@ app.use('/moments', routes.moments)
 app.use('/share', routes.share)
 app.use('/sign-up', routes.signUp)
 app.use('/users', routes.users)
-app.use('/modify-password', routes.modifyPassword)
 
 app.listen(process.env.PORT, (err) => {
   if (err) {
