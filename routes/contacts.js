@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const connection = require('../conf')
+const { connection } = require('../conf')
 const SchemaValidator = require('../schemaValidator')
 
 const validateRequest = SchemaValidator(true)
