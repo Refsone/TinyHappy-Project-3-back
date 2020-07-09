@@ -4,7 +4,6 @@ const router = express.Router()
 const { verifyToken } = require('../service/verif.service')
 
 router.post('/', verifyToken, (req, res) => {
-  console.log(req.body)
   let mailOutput = `
   Hey, vous avez reçu plein de moments !!
   `
