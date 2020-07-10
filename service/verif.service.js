@@ -7,7 +7,7 @@ const verifyEmail = (req, res, next) => {
   if (!emailRegEx.test(req.body.user_mail)) {
     return res.status(401).send('Unauthorized user!')
   }
-  return next()
+  next()
 }
 
 // Verify if the email exist in the database
@@ -41,4 +41,4 @@ const verifyToken = (req, res, next) => {
   }
 }
 
-module.exports = { verifyEmail, verifyToken }
+module.exports = { verifyEmail, verifyToken, verifyIfEmailExist }
