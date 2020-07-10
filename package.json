@@ -31,7 +31,8 @@
     "moment": "^2.27.0",
     "mysql": "^2.18.1",
     "node-mailjet": "^3.3.1",
-    "nodemailer": "^6.4.10"
+    "nodemailer": "^6.4.10",
+    "nodemailer-express-handlebars": "^4.0.0"
   },
   "devDependencies": {
     "husky": "^4.2.5",
