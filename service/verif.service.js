@@ -1,6 +1,5 @@
-const connexion = require('../conf')
 const jwt = require('jsonwebtoken')
-const { secret } = require('../conf')
+const { secret, connection } = require('../conf')
 
 const verifyEmail = (req, res, next) => {
   const emailRegEx = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/
@@ -12,7 +11,8 @@ const verifyEmail = (req, res, next) => {
 
 // Verify if the email exist in the database
 const verifyIfEmailExist = (req, res, next) => {
-  connexion.query('SELECT * from user WHERE user_mail = ?', req.body.user_mail, (err, result) => {
+  console.log(secret)
+  connection.query('SELECT * from user WHERE user_mail = ?', req.body.user_mail, (err, result) => {
     if (err) {
       return res.status(500).json({
         message: err.message,

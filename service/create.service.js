@@ -1,6 +1,6 @@
 const generator = require('generate-password')
 const bcrypt = require('bcryptjs')
-const connection = require('../conf')
+const { connection } = require('../conf')
 
 // Generate a custom password
 const createTempPassword = (req, res, next) => {

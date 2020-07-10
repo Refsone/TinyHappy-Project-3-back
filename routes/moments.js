@@ -15,7 +15,6 @@ router.put('/', verifyToken, (req, res) => {
 })
 
 router.post('/create', (req, res) => {
-  console.log(req.body.family_id)
   const dataMoment = req.body
   const idFamilyMember = req.body.family_id
   delete dataMoment.family_id
