@@ -1,4 +1,8 @@
 const express = require('express')
+const hbs = require('nodemailer-express-handlebars')
+const Moment = require('moment')
+const path = require('path')
+require('moment/locale/fr')
 const nodemailer = require('nodemailer')
 const router = express.Router()
 const { verifyToken } = require('../service/verif.service')
@@ -15,6 +19,7 @@ router.post('/', verifyToken, (req, res) => {
     mailOutput += message
     return mailOutput
   })
+  const lenghtOtherNames = req.body.authorsSelect.length
   const transporter = nodemailer.createTransport({
     host: 'smtp-mail.outlook.com',
     port: 587,
@@ -25,12 +30,32 @@ router.post('/', verifyToken, (req, res) => {
     }
   })
 
-  transporter.sendMail({
-    from: '"TinyHappy 💙" <auxence_6033@hotmail.fr',
-    to: 'auxence.blondel@gmail.com',
-    subject: 'Nouveaux moments!',
-    text: 'Hello world?',
-    html: mailOutput
+  transporter.use('compile', hbs({
+    viewEngine: { layoutsDir: './views', engine: 'express-handlebars', defaultLayout: false },
+
+    viewPath: path.resolve(__dirname, '../views')
+  }))
+
+  const mailOptions = {
+    from: `"${req.body.userName} via TinyHappy" <auxence_6033@hotmail.fr`,
+    to: req.body.selectedMail.join(', '),
+    subject: `${req.body.userName} vous partage tous ses meilleurs Moments !`,
+    template: 'moments',
+    context: {
+      userName: req.body.userName,
+      lastOtherNames: req.body.authorsSelect[lenghtOtherNames - 1],
+      otherNames: req.body.authorsSelect.splice(0, lenghtOtherNames - 1),
+      moments: momentsData
+    }
+  }
+
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send(`Erreur: ${err}`)
+    } else {
+      res.status(200).send('Le mail a bien été envoyé')
+    }
   })
 })
 
