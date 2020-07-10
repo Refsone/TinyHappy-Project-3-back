@@ -11,7 +11,6 @@ const verifyEmail = (req, res, next) => {
 
 // Verify if the email exist in the database
 const verifyIfEmailExist = (req, res, next) => {
-  console.log(secret)
   connection.query('SELECT * from user WHERE user_mail = ?', req.body.user_mail, (err, result) => {
     if (err) {
       return res.status(500).json({
