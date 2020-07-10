@@ -88,7 +88,7 @@ router.get('/:user_id/family-members/:member_id', verifyToken, (req, res) => {
   })
 })
 
-router.get('/:id/moments', (req, res) => {
+router.get('/:id/moments', verifyToken, (req, res) => {
   const sql = `
   SELECT moment.id, moment_text, moment_context, moment_favorite, moment_event_date, family_firstname, type, user_isPresent, color FROM moment
   JOIN family_moment ON moment_id=moment.id
@@ -180,6 +180,36 @@ router.put('/update', verifyToken, validateRequest, (req, res) => {
       }
     })
   })
+})
+
+router.put('/:id/modify-password', verifyToken, (req, res) => {
+  const id = req.params.id
+  const newPassword = req.body.newPassword
+  const user_password = req.body.actualPassword
+  connection.query('SELECT user_password FROM user WHERE id = ?', id, (err, result) => {
+    const pwdIsValid = bcrypt.compareSync(user_password, result[0].user_password)
+    if (err) {
+      return res.status(500).json({
+        message: err.message,
+        sql: err.sql
+      })
+    } else if (pwdIsValid) {
+      const hashNewPassword = bcrypt.hashSync(newPassword)
+      connection.query('UPDATE user SET user_password = ? WHERE id = ?', [hashNewPassword, id], (err, result) => {
+        if (err) {
+          return res.status(500).json({
+            message: err.message,
+            sql: err.sql
+          })
+        } else {
+          res.status(201).json('password change successfully')
+        }
+      })
+    } else {
+      res.sendStatus(400)
+    }
+  }
+  )
 })
 
 module.exports = router
