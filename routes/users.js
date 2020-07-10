@@ -19,14 +19,49 @@ router.get('/', verifyToken, (req, res) => {
   })
 })
 
-router.get('/:id', verifyToken, (req, res) => {
-  connection.query('SELECT user_firstname, user_lastname, user_firstname, user_birthday, color_family_id, color FROM user JOIN color_family ON color_family.id=user.color_family_id WHERE user.id = ?', [req.params.id], (err, results) => {
+router.get('/tempPwd/', (req, res) => {
+  const { mail } = req.query
+  // Verify if the mail exist on the database
+  connection.query('SELECT user_temp_password, temp_password_limit FROM user WHERE user_mail = ?', mail, (err, result) => {
     if (err) {
-      res.status(500).send('Erreur lors de la récupération de l\'utilisateur')
-      console.log(err)
-    } else {
-      res.json(results)
+      return res.status(500).json({
+        message: err.message,
+        sql: err.sql
+      })
+    } else if (!result[0]) {
+      return res.status(404).json({
+        message: 'The email does not exist'
+      })
     }
+    // Verify is the temporary password match with bdd password
+    bcrypt.compare(req.query.tempPwd, result[0].user_temp_password, (err, ok) => {
+      if (err) {
+        return res.status(500).send('Error when compare the password')
+      }
+      if (ok) {
+        const date = new Date().getTime()
+        // Verify if the temp password is still available
+        if (result[0].temp_password_limit < date) {
+          return res.status(403).send('The limit of the temporary password is over')
+        }
+        return res.status(200).send('Temporary password is valid')
+      }
+      return res.status(404).send('Temporary password is not valid')
+    })
+  })
+})
+
+router.get('/:id', (req, res) => {
+  connection.query('SELECT user_firstname, user_lastname, user_surname, user_birthday, color_family_id, color FROM user JOIN color_family ON color_family.id=user.color_family_id WHERE user.id = ?', [req.params.id], (err, results) => {
+    router.get('/:id', verifyToken, (req, res) => {
+      connection.query('SELECT user_firstname, user_lastname, user_firstname, user_birthday, color_family_id, color FROM user JOIN color_family ON color_family.id=user.color_family_id WHERE user.id = ?', [req.params.id], (err, results) => {
+        if (err) {
+          res.status(500).send('Erreur lors de la récupération de l\'utilisateur')
+        } else {
+          res.json(results)
+        }
+      })
+    })
   })
 })
 
@@ -40,6 +75,7 @@ router.get('/:id/family', verifyToken, (req, res) => {
     }
   })
 })
+
 router.get('/:user_id/family-members/:member_id', verifyToken, (req, res) => {
   connection.query('SELECT id, family_firstname, family_lastname, family_surname, family_birthday, color_family_id FROM family_member WHERE id = ?', [req.params.member_id], (err, results) => {
     if (err) {
