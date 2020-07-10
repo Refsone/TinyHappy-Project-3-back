@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken')
+const { secret } = require('../conf')
+
 const verifyEmail = (req, res, next) => {
   const emailRegEx = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/
   if (!emailRegEx.test(req.body.user_mail)) {
@@ -6,11 +9,11 @@ const verifyEmail = (req, res, next) => {
   }
   next()
 }
+
 const verif = (req, res, next) => {
   const token = req.body.token
-  const decoded = jwt.verify(token, 'mySecretSalt')
+  const decoded = jwt.verify(token, secret)
   console.log(decoded)
-  
   next()
 }
 

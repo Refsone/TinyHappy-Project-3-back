@@ -1,5 +1,6 @@
 const express = require('express')
-const connection = require('../conf')
+
+const { connection } = require('../conf')
 const router = express.Router()
 const bcrypt = require('bcryptjs')
 
@@ -18,7 +19,7 @@ router.get('/', (req, res) => {
 })
 
 router.get('/:id', (req, res) => {
-  connection.query('SELECT user_firstname, user_lastname, user_surname, user_birthday, color_family_id, color FROM user JOIN color_family ON color_family.id=user.color_family_id WHERE user.id = ?', [req.params.id], (err, results) => {
+  connection.query('SELECT user_firstname, user_lastname, user_firstname, user_birthday, color_family_id, color FROM user JOIN color_family ON color_family.id=user.color_family_id WHERE user.id = ?', [req.params.id], (err, results) => {
     if (err) {
       res.status(500).send('Erreur lors de la récupération de l\'utilisateur')
       console.log(err)
@@ -38,6 +39,7 @@ router.get('/:id/family', (req, res) => {
     }
   })
 })
+
 router.get('/:user_id/family-members/:member_id', (req, res) => {
   connection.query('SELECT id, family_firstname, family_lastname, family_surname, family_birthday, color_family_id FROM family_member WHERE id = ?', [req.params.member_id], (err, results) => {
     if (err) {
@@ -60,8 +62,6 @@ router.get('/:id/moments', (req, res) => {
       const idToDrop = []
       const moments = results
         .map((moment, id) => {
-          // console.log(moment)
-          // console.log('ID', id)
           const familyFirstname = { firstname: moment.family_firstname, color: moment.color }
           if (moment.moment_text === prevText) {
             idToDrop.push(id - 1)
@@ -79,11 +79,6 @@ router.get('/:id/moments', (req, res) => {
           return moment
         })
         .filter((elt, id) => idToDrop.indexOf(id) === -1)
-
-      // idToDrop.map((elt) => {
-      //   moments.splice(elt, 1)
-      //   console.log(moments)
-      // })
       res.json(moments)
     }
   })
@@ -143,11 +138,11 @@ router.put('/update', validateRequest, (req, res) => {
   })
 })
 
-router.put('/:id', (req, res) => {
+router.put('/:id/modify-password', (req, res) => {
   const id = req.params.id
   const newPassword = req.body.newPassword
   const user_password = req.body.actualPassword
-
+  console.log('req', req.headers)
   connection.query('SELECT user_password FROM user WHERE id = ?', id, (err, result) => {
     const pwdIsValid = bcrypt.compareSync(user_password, result[0].user_password)
     if (err) {
