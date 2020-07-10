@@ -15,7 +15,6 @@ router.put('/', verifyToken, (req, res) => {
 })
 
 router.post('/create', verifyToken, (req, res) => {
-  console.log('moment')
   const dataMoment = req.body
   const idFamilyMember = req.body.family_id
   delete dataMoment.family_id
@@ -25,11 +24,16 @@ router.post('/create', verifyToken, (req, res) => {
     } else {
       const sql = 'INSERT INTO family_moment VALUES ?'
       const sqlValues = []
-      idFamilyMember.map(id => {
-        sqlValues.push([id, results.insertId])
-      })
+      if(idFamilyMember.length > 0){
+        idFamilyMember.map(id => {
+          sqlValues.push([id, results.insertId])
+        })
+      } else {
+        sqlValues.push([parseInt(dataMoment.user_id), results.insertId])
+      }
       connection.query(sql, [sqlValues], (err, results) => {
         if (err) {
+          console.log(err)
           res.status(500).send('Erreur lors de l\'ajout du moment')
         } else {
           res.sendStatus(201)
