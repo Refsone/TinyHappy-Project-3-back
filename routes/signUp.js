@@ -10,8 +10,7 @@ const insertUser = (req, res) => {
     user_firstname: req.body.user_firstname,
     user_lastname: req.body.user_lastname,
     user_mail: req.body.user_mail,
-    user_password: bcrypt.hashSync(req.body.user_password),
-    parameter_id: req.body.parameter_id
+    user_password: bcrypt.hashSync(req.body.user_password)
   }
 
   connection.query('INSERT INTO user SET ?', user, (err, result) => {
