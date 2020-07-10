@@ -186,7 +186,6 @@ router.put('/:id/modify-password', verifyToken, (req, res) => {
   const id = req.params.id
   const newPassword = req.body.newPassword
   const user_password = req.body.actualPassword
-  console.log('req', req.headers)
   connection.query('SELECT user_password FROM user WHERE id = ?', id, (err, result) => {
     const pwdIsValid = bcrypt.compareSync(user_password, result[0].user_password)
     if (err) {
