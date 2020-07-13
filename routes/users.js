@@ -19,8 +19,8 @@ router.get('/', verifyToken, (req, res) => {
   })
 })
 
-router.get('/tempPwd/', (req, res) => {
-  const { mail } = req.query
+router.post('/tempPwd/', (req, res) => {
+  const { mail } = req.body
   // Verify if the mail exist on the database
   connection.query('SELECT user_temp_password, temp_password_limit FROM user WHERE user_mail = ?', mail, (err, result) => {
     if (err) {
@@ -34,7 +34,7 @@ router.get('/tempPwd/', (req, res) => {
       })
     }
     // Verify is the temporary password match with bdd password
-    bcrypt.compare(req.query.tempPwd, result[0].user_temp_password, (err, ok) => {
+    bcrypt.compare(req.body.tempPwd, result[0].user_temp_password, (err, ok) => {
       if (err) {
         return res.status(500).send('Error when compare the password')
       }
