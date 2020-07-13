@@ -5,9 +5,9 @@ const { connection, secret } = require('../conf')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
-const { verifyEmail } = require('./services/verif.service')
+const { verifyEmail } = require('../service/verif.service')
 
-const checkingtUser = (req, res, next) => {
+const checkingUser = (req, res, next) => {
   const userMail = req.body.user_mail
   const userPassword = req.body.user_password
   connection.query('SELECT * FROM user WHERE user_mail = ?', userMail, (err, result) => {
@@ -33,9 +33,9 @@ const generateToken = (req, res, next) => {
   )
   res.header('Access-Control-Expose-Headers', 'x-access-token')
   res.set('x-access-token', token)
-  res.status(200).send({ auth: true })
+  res.status(200).send({ auth: true, id: req.user.id})
 }
 
-router.post('/', verifyEmail, checkingtUser, generateToken)
+router.post('/', verifyEmail, checkingUser, generateToken)
 
 module.exports = router

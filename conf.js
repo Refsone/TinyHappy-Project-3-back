@@ -2,6 +2,7 @@ const mysql = require('mysql')
 
 const secret = process.env.JWT_SECRET
 // Setup database connection
+
 const connection = mysql.createConnection({
   host: process.env.DB_HOST, // db server address
   user: process.env.DB_USER, // db user's name

@@ -4,9 +4,10 @@ const { connection } = require('../conf')
 const SchemaValidator = require('../schemaValidator')
 
 const validateRequest = SchemaValidator(true)
+const { verifyToken } = require('../service/verif.service')
 
 // Add a new contact
-router.post('/new', validateRequest, (req, res) => {
+router.post('/new', verifyToken, validateRequest, (req, res) => {
   const { mail, user_id } = req.body
   connection.query('INSERT INTO contact SET ?', { mail: mail }, (err, result) => {
     if (err) {
@@ -44,7 +45,7 @@ router.post('/new', validateRequest, (req, res) => {
 })
 
 // Delete a contact
-router.delete('/:id', (req, res) => {
+router.delete('/:id', verifyToken, (req, res) => {
   const id = req.params.id
   connection.query('DELETE FROM contact WHERE id = ?', id, (err, result) => {
     if (err) {
