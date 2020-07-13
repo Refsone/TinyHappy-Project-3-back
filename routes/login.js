@@ -33,7 +33,7 @@ const generateToken = (req, res, next) => {
   )
   res.header('Access-Control-Expose-Headers', 'x-access-token')
   res.set('x-access-token', token)
-  res.status(200).send({ auth: true })
+  res.status(200).send({ auth: true, id: req.user.id})
 }
 
 router.post('/', verifyEmail, checkingUser, generateToken)
