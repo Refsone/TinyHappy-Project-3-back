@@ -1,10 +1,10 @@
 const express = require('express')
 const hbs = require('nodemailer-express-handlebars')
 const Moment = require('moment')
-const path = require('path')
 require('moment/locale/fr')
-const nodemailer = require('nodemailer')
+const path = require('path')
 const router = express.Router()
+const transporter = require('../../service/mailTransporter')
 
 router.post('/', (req, res) => {
   Moment.locale('fr')
@@ -18,24 +18,15 @@ router.post('/', (req, res) => {
     return moment
   })
   const lenghtOtherNames = req.body.authorsSelect.length
-  const transporter = nodemailer.createTransport({
-    host: 'smtp-mail.outlook.com',
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: process.env.MAIL,
-      pass: process.env.MAIL_PASS
-    }
-  })
 
   transporter.use('compile', hbs({
     viewEngine: { layoutsDir: './views', engine: 'express-handlebars', defaultLayout: false },
 
-    viewPath: path.resolve(__dirname, '../views')
+    viewPath: path.resolve(__dirname, '../../views')
   }))
 
   const mailOptions = {
-    from: `"${req.body.userName} via TinyHappy" <auxence_6033@hotmail.fr`,
+    from: `"${req.body.userName} via TinyHappy" ${process.env.MAIL}`,
     to: req.body.selectedMail.join(', '),
     subject: `${req.body.userName} vous partage tous ses meilleurs Moments !`,
     template: 'moments',

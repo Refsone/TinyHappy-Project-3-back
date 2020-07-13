@@ -4,7 +4,7 @@ const familyMembers = require('./family-members')
 const login = require('./login')
 const mailing = require('./mailing')
 const moments = require('./moments')
-const share = require('./share')
+const sendMail = require('./sendMail')
 const signUp = require('./signUp')
 const users = require('./users')
 
@@ -15,7 +15,7 @@ module.exports = {
   login,
   mailing,
   moments,
-  share,
+  sendMail,
   signUp,
   users
 }

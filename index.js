@@ -17,7 +17,7 @@ app.use('/family-members', routes.familyMembers)
 app.use('/mailing', routes.mailing)
 app.use('/moments', routes.moments)
 app.use('/sign-up', routes.signUp)
-app.use('/share', routes.share)
+app.use('/send-mail', routes.sendMail)
 app.use('/users', routes.users)
 app.use('/users/login', routes.login)
 
