@@ -35,7 +35,7 @@ router.post('/', (req, res) => {
   }))
 
   const mailOptions = {
-    from: `"${req.body.userName} via TinyHappy" <auxence_6033@hotmail.fr`,
+    from: `"${req.body.userName} via TinyHappy" <${process.env.MAIL}>`,
     to: req.body.selectedMail.join(', '),
     subject: `${req.body.userName} vous partage tous ses meilleurs Moments !`,
     template: 'moments',
