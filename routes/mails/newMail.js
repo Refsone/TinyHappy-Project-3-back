@@ -2,26 +2,23 @@ const express = require('express')
 const router = express.Router()
 const transporter = require('../../service/mailTransporter')
 
+const frontUrl = process.env.URL_FRONT
+
 router.post('/', (req, res) => {
   const message =
     `
     <p>Hello ${req.body.user_firstname}</p>
-    <p>Bienvenue sur Tinyhappy !</p>
-    <p>Nous sommes absolument ravis de vous avoir à bord !</p>
-    <p>Grâce à Tinyhappy, vous pouvez à tout instant : </p>
-    <ul>
-      <li>créer de nouveaux membres de votre famille</li>
-      <li>sauvegarder les citations et les faits marquants de vos enfants</li>
-      <li>partager tous ces moments avec vos proches (par mail)</li>
-    </ul>
-    <p>Ne perdez plus un instant, votre journal de famille n'attend plus que vous !</p>
+    <p>Votre adresse mail a été changé avec succès !</p>
+    <p>Vous pouvez désormais vous connecter à l'aide de cette adresse.</p>
+    <a href=${frontUrl}/onboarding/login><strong>ME CONNECTER</strong></a>
+    <p>Si vous n'êtes pas à l'origine de ce changement de mot de passe, merci de nous contacter directement à l'adresse hello@tinyhappy.app.</p>
     <p>Jérôme de Tinyhappy</p>
     `
 
   const mailOptions = {
     from: `"Jérôme de TinyHappy" ${process.env.MAIL}`,
     to: req.body.user_mail,
-    subject: 'Bienvenue sur Tinyhappy ! 👋',
+    subject: 'Votre adresse mail a bien été modifié ✉',
     html: message
   }
 
