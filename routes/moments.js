@@ -33,7 +33,6 @@ router.post('/create', verifyToken, (req, res) => {
       }
       connection.query(sql, [sqlValues], (err, results) => {
         if (err) {
-          console.log(err)
           res.status(500).send('Erreur lors de l\'ajout du moment')
         } else {
           res.sendStatus(201)
