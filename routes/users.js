@@ -12,7 +12,6 @@ router.get('/', verifyToken, (req, res) => {
   connection.query('SELECT user_mail, user_password FROM user', (err, results) => {
     if (err) {
       res.status(500).send('Erreur lors de la récupération de l\'utilisateur')
-      console.log(err)
     } else {
       res.json(results)
     }
@@ -62,7 +61,6 @@ router.get('/:id', verifyToken, (req, res) => {
 })
 
 router.get('/:id/family', verifyToken, (req, res) => {
-  console.table(req.params)
   connection.query('SELECT fa.id AS member_id, family_firstname, family_lastname, family_surname, family_birthday, color FROM family_member fa JOIN color_family ON color_family.id=fa.color_family_id WHERE fa.user_id = ?', [req.params.id], (err, results) => {
     if (err) {
       res.status(500).send('Erreur lors de la récupération des membres de la famille')

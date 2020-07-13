@@ -5,19 +5,17 @@ const path = require('path')
 require('moment/locale/fr')
 const nodemailer = require('nodemailer')
 const router = express.Router()
-const { verifyToken } = require('../service/verif.service')
 
-router.post('/', verifyToken, (req, res) => {
-  let mailOutput = `
-  Hey, vous avez reçu plein de moments !!
-  `
-  req.body.map(moment => {
-    const message =
-    '<p>Auteurs : ' + moment.firstname_color.map(person => person.firstname) + '</p>' +
-    '<p>Texte : ' + moment.moment_text + '</p>' +
-    '<br>'
-    mailOutput += message
-    return mailOutput
+router.post('/', (req, res) => {
+  Moment.locale('fr')
+
+  // convert date and delete milestone for verification into .handlebars
+  const momentsData = req.body.momentsToSend.map(moment => {
+    moment.moment_event_date = Moment(moment.moment_event_date).format('LL')
+    if (moment.type === 'milestone') {
+      delete moment.type
+    }
+    return moment
   })
   const lenghtOtherNames = req.body.authorsSelect.length
   const transporter = nodemailer.createTransport({
@@ -51,7 +49,6 @@ router.post('/', verifyToken, (req, res) => {
 
   transporter.sendMail(mailOptions, (err, info) => {
     if (err) {
-      console.log(err)
       res.status(500).send(`Erreur: ${err}`)
     } else {
       res.status(200).send('Le mail a bien été envoyé')
