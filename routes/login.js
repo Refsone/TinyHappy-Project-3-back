@@ -27,7 +27,7 @@ const checkingUser = (req, res, next) => {
 
 const generateToken = (req, res, next) => {
   const token = jwt.sign(
-    { id: req.user.id },
+    { id: req.user.id, mail: req.user.user_mail, name: req.user.user_firstname },
     secret,
     { algorithm: 'HS256' }
   )
