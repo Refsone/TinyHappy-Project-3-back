@@ -206,4 +206,28 @@ router.put('/:id/modify-password', verifyToken, (req, res) => {
   )
 })
 
+router.put('/:id/modify-email', verifyToken, (req, res) => {
+  const newEmail = req.body.new_user_mail
+  const id = req.params.id
+  connection.query('SELECT user_mail form user WHERE id = ?', id, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        message: err.message,
+        sql: err.sql
+      })
+    } else if (newEmail) {
+      connection.query('UPDATE user SET user_mail = ? WHERE id = ?', id, (err, result) => {
+        if (err) {
+          return res.status(500).json({
+            message: err.message,
+            sql: err.sql
+          })
+        } else {
+          res.status(200).json('Email changed')
+        }
+      })
+    }
+  })
+})
+
 module.exports = router
