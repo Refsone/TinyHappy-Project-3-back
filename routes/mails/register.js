@@ -19,7 +19,7 @@ router.post('/', (req, res) => {
     `
 
   const mailOptions = {
-    from: `"Jérôme de TinyHappy" ${process.env.MAIL}`,
+    from: `"Jérôme de TinyHappy" <${process.env.MAIL}>`,
     to: req.body.user_mail,
     subject: 'Bienvenue sur Tinyhappy ! 👋',
     html: message

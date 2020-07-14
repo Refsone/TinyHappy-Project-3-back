@@ -16,7 +16,7 @@ router.post('/', (req, res) => {
     `
 
   const mailOptions = {
-    from: `"Jérôme de TinyHappy" ${process.env.MAIL}`,
+    from: `"Jérôme de TinyHappy" <${process.env.MAIL}>`,
     to: req.body.user_mail,
     subject: 'Votre mot de passe a bien été modifié 🔑',
     html: message
