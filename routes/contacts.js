@@ -4,7 +4,7 @@ const { connection } = require('../conf')
 const SchemaValidator = require('../schemaValidator')
 
 const validateRequest = SchemaValidator(true)
-const { verifyToken } = require('../service/verif.service')
+const { verifyToken } = require('../services/verif.service')
 
 // Add a new contact
 router.post('/new', verifyToken, validateRequest, (req, res) => {

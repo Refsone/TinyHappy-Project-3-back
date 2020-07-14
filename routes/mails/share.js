@@ -4,7 +4,7 @@ const Moment = require('moment')
 require('moment/locale/fr')
 const path = require('path')
 const router = express.Router()
-const transporter = require('../../service/mailTransporter')
+const transporter = require('../../services/mailTransporter')
 
 router.post('/', (req, res) => {
   Moment.locale('fr')

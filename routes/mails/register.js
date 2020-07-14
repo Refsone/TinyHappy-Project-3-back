@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const transporter = require('../../service/mailTransporter')
+const transporter = require('../../services/mailTransporter')
 
 router.post('/', (req, res) => {
   const message =
