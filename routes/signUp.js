@@ -15,7 +15,6 @@ const insertUser = (req, res) => {
 
   connection.query('INSERT INTO user SET ?', user, (err, result) => {
     if (err) {
-      console.log('erreur', err)
       return res.status(500).send('Cannot register the user')
     } else {
       res.status(201).json(result)
