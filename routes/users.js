@@ -213,19 +213,6 @@ router.get('/:user_id/parameter', verifyToken, (req, res) => {
       console.log(err)
     } else {
       res.json(results)
-      console.log(results)
-    }
-  })
-})
-
-router.put('/:parameter', verifyToken, (req, res) => {
-  console.log(req.body)
-  connection.query('UPDATE parameter SET display_birthday= ? WHERE parameter.user_id = ?', [req.body.display_birthday, req.body.user_id], (err, results) => {
-    if (err) {
-      res.status(500).send('Erreur lors de l\'affichage de l\'anniversaire de l\'utilisateur')
-      console.log(err)
-    } else {
-      res.json(results)
     }
   })
 })
