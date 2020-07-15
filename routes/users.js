@@ -12,15 +12,14 @@ router.get('/', verifyToken, (req, res) => {
   connection.query('SELECT user_mail, user_password FROM user', (err, results) => {
     if (err) {
       res.status(500).send('Erreur lors de la récupération de l\'utilisateur')
-      console.log(err)
     } else {
       res.json(results)
     }
   })
 })
 
-router.get('/tempPwd/', (req, res) => {
-  const { mail } = req.query
+router.post('/tempPwd/', (req, res) => {
+  const { mail } = req.body
   // Verify if the mail exist on the database
   connection.query('SELECT user_temp_password, temp_password_limit FROM user WHERE user_mail = ?', mail, (err, result) => {
     if (err) {
@@ -34,7 +33,7 @@ router.get('/tempPwd/', (req, res) => {
       })
     }
     // Verify is the temporary password match with bdd password
-    bcrypt.compare(req.query.tempPwd, result[0].user_temp_password, (err, ok) => {
+    bcrypt.compare(req.body.tempPwd, result[0].user_temp_password, (err, ok) => {
       if (err) {
         return res.status(500).send('Error when compare the password')
       }
@@ -48,6 +47,51 @@ router.get('/tempPwd/', (req, res) => {
       }
       return res.status(404).send('Temporary password is not valid')
     })
+  })
+})
+
+router.put('/tempPwd/', (req, res) => {
+  const { mail } = req.body
+  // Verify if the mail exist on the database
+  connection.query('SELECT user_temp_password, temp_password_limit FROM user WHERE user_mail = ?', mail, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        message: err.message,
+        sql: err.sql
+      })
+    } else if (!result[0]) {
+      return res.status(404).json({
+        message: 'The email does not exist'
+      })
+    }
+    // Verify is the temporary password match with bdd password
+    bcrypt.compare(req.body.tempPwd, result[0].user_temp_password, (err, ok) => {
+      if (err) {
+        return res.status(500).send('Error when compare the password')
+      }
+      if (ok) {
+        const date = new Date().getTime()
+        // Verify if the temp password is still available
+        if (result[0].temp_password_limit < date) {
+          return res.status(403).send('The limit of the temporary password is over')
+        }
+      }
+    })
+  })
+  const formdata = {
+    user_mail: mail,
+    user_password: bcrypt.hashSync(req.body.newPwd),
+    user_temp_password: null,
+    temp_password_limit: null
+  }
+  connection.query('UPDATE user SET ? WHERE user_mail = ?', [formdata, mail], (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        message: err.message,
+        sql: err.sql
+      })
+    }
+    return res.status(200).send('Password updated!')
   })
 })
 
@@ -68,7 +112,6 @@ router.get('/:id', (req, res) => {
 router.get('/:id/family', verifyToken, (req, res) => {
   connection.query('SELECT fa.id AS member_id, family_firstname, family_lastname, family_surname, family_birthday, color FROM family_member fa JOIN color_family ON color_family.id=fa.color_family_id WHERE fa.user_id = ?', [req.params.id], (err, results) => {
     if (err) {
-      console.log(err)
       res.status(500).send('Erreur lors de la récupération des membres de la famille')
     } else {
       res.json(results)
