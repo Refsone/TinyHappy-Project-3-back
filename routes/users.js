@@ -206,8 +206,21 @@ router.put('/:id/modify-password', verifyToken, (req, res) => {
   )
 })
 
-router.put('/:user_id/parameter:', verifyToken, (req, res) => {
-  connection.query('UPDATE parameter SET display_birthday=0 WHERE display_birthday=1', [req.params.id], (err, results) => {
+router.get('/:user_id/parameter', verifyToken, (req, res) => {
+  connection.query('SELECT display_birthday FROM parameter WHERE parameter.user_id = ?', [req.params.user_id], (err, results) => {
+    if (err) {
+      res.status(500).send('Erreur lors de la recherche du user')
+      console.log(err)
+    } else {
+      res.json(results)
+      console.log(results)
+    }
+  })
+})
+
+router.put('/:parameter', verifyToken, (req, res) => {
+  console.log(req.body)
+  connection.query('UPDATE parameter SET display_birthday= ? WHERE parameter.user_id = ?', [req.body.display_birthday, req.body.user_id], (err, results) => {
     if (err) {
       res.status(500).send('Erreur lors de l\'affichage de l\'anniversaire de l\'utilisateur')
       console.log(err)
