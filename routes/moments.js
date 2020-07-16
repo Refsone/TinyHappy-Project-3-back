@@ -24,7 +24,7 @@ router.post('/create', verifyToken, (req, res) => {
     } else {
       const sql = 'INSERT INTO family_moment VALUES ?'
       const sqlValues = []
-      if(idFamilyMember.length > 0){
+      if (idFamilyMember.length > 0) {
         idFamilyMember.map(id => {
           sqlValues.push([id, results.insertId])
         })
