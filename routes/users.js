@@ -263,24 +263,27 @@ router.get('/:user_id/parameter', verifyToken, (req, res) => {
 })
 
 router.put('/:id/modify-email', verifyToken, (req, res) => {
+  console.log(req.params)
+  const id = req.params.id
   const newEmail = req.body.new_user_mail
-  const id = req.params.user_id
-  console.log(res.params.user_id)
-  connection.query('SELECT user_mail form user WHERE id = ?', id, (err, result) => {
+  connection.query('SELECT user_mail FROM user WHERE id = ?', id, [newEmail], (err, result) => {
     if (err) {
       return res.status(500).json({
         message: err.message,
         sql: err.sql
       })
-    } else if (newEmail) {
-      connection.query('UPDATE user SET user_mail = ? WHERE id = ?', id, (err, result) => {
+    } else if (result[0] === newEmail) {
+      return res.status(401).send('Cette adresse email existe déjà')
+    } else {
+      connection.query('UPDATE user SET user_mail = ? WHERE id = ?', id, [newEmail], (err, result) => {
         if (err) {
           return res.status(500).json({
             message: err.message,
             sql: err.sql
           })
         } else {
-          res.status(200).json('Email changed')
+          console.log(result)
+          res.status(200).send('Email changed')
         }
       })
     }
