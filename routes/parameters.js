@@ -8,7 +8,6 @@ router.put('/display-birthday', verifyToken, (req, res) => {
   connection.query('UPDATE parameter SET display_birthday = ? WHERE parameter.user_id = ?', [req.body.display_birthday, req.body.user_id], (err, results) => {
     if (err) {
       res.status(500).send('Erreur lors de l\'affichage de l\'anniversaire de l\'utilisateur')
-      console.log(err)
     } else {
       res.json(results)
     }
