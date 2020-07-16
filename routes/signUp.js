@@ -18,7 +18,7 @@ const insertUser = (req, res) => {
       console.log(err)
       return res.status(500).send('Cannot register the user')
     } else {
-      connection.query(`INSERT INTO parameter user_id VALUES ${result.insertId}`, (err, result) => {
+      connection.query(`INSERT INTO parameter (user_id) VALUES (${result.insertId})`, (err, result) => {
         if (err) {
           console.log(err)
           return res.status(500).send('Cannot set user parameter')
