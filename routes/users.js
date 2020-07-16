@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs')
 
 const SchemaValidator = require('../schemaValidator')
 const validateRequest = SchemaValidator(true)
-const { verifyToken } = require('../service/verif.service')
+const { verifyToken } = require('../services/verif.service')
 
 router.get('/', verifyToken, (req, res) => {
   connection.query('SELECT user_mail, user_password FROM user', (err, results) => {
