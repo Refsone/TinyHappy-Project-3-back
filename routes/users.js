@@ -208,7 +208,8 @@ router.put('/:id/modify-password', verifyToken, (req, res) => {
 
 router.put('/:id/modify-email', verifyToken, (req, res) => {
   const newEmail = req.body.new_user_mail
-  const id = req.params.id
+  const id = req.params.user_id
+  console.log(res.params.user_id)
   connection.query('SELECT user_mail form user WHERE id = ?', id, (err, result) => {
     if (err) {
       return res.status(500).json({
