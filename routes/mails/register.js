@@ -5,7 +5,7 @@ const transporter = require('../../services/mailTransporter')
 router.post('/', (req, res) => {
   const message =
     `
-    <p>Hello ${req.body.user_firstname}</p>
+    <p>Hello ${req.body.userName}</p>
     <p>Bienvenue sur Tinyhappy !</p>
     <p>Nous sommes absolument ravis de vous avoir à bord !</p>
     <p>Grâce à Tinyhappy, vous pouvez à tout instant : </p>
@@ -20,7 +20,7 @@ router.post('/', (req, res) => {
 
   const mailOptions = {
     from: `"Jérôme de TinyHappy" <${process.env.MAIL}>`,
-    to: req.body.user_mail,
+    to: req.body.userMail,
     subject: 'Bienvenue sur Tinyhappy ! 👋',
     html: message
   }

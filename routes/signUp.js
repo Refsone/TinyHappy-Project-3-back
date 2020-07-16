@@ -14,30 +14,30 @@ router.post('/', verifyEmail, verifyPassWord, validateRequest, (req, res) => {
     user_mail: req.body.user_mail,
     user_password: bcrypt.hashSync(req.body.user_password)
   }
-  connection.query('INSERT INTO user SET ?', user, (err, result) => {
+  connection.query('INSERT INTO user SET ?', user, (err, result1) => {
     if (err) {
       return res.status(500).json({
         message: err.message,
         sql: err.sql
       })
     }
-    connection.query(`INSERT INTO parameter (user_id) VALUES (${result.insertId})`, (err, result) => {
+    const createId = result1.insertId
+
+    connection.query('SELECT * from user WHERE id = ?', createId, (err, result) => {
       if (err) {
-        console.log(err)
-        return res.status(500).send('Cannot set user parameter')
+        return res.status(500).json({
+          message: err.message,
+          sql: err.sql
+        })
       }
-      connection.query('SELECT * from user WHERE id = ?', result.insertId, (err, result2) => {
+      const host = req.get('host')
+      const location = `http://${host}/users/${createId}`
+      const { user_password, ...infoUser } = result1
+
+      connection.query(`INSERT INTO parameter (user_id) VALUES (${createId})`, (err, result) => {
         if (err) {
-          return res.status(500).json({
-            message: err.message,
-            sql: err.sql
-          })
+          return res.status(500).send('Cannot set user parameter')
         }
-        const host = req.get('host')
-        const location = `http://${host}/users/${result.insertId}`
-
-        const { user_password, ...infoUser } = result2[0]
-
         return res.status(201)
           .set('location', location)
           .json({ infoUser })
