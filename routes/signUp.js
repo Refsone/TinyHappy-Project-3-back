@@ -15,9 +15,16 @@ const insertUser = (req, res) => {
 
   connection.query('INSERT INTO user SET ?', user, (err, result) => {
     if (err) {
+      console.log(err)
       return res.status(500).send('Cannot register the user')
     } else {
-      res.status(201).json(result)
+      connection.query(`INSERT INTO parameter user_id VALUES ${result.insertId}`, (err, result) => {
+        if (err) {
+          console.log(err)
+          return res.status(500).send('Cannot set user parameter')
+        }
+        res.status(201).json(result)
+      })
     }
   })
 }
