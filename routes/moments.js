@@ -2,7 +2,7 @@ const express = require('express')
 
 const { connection } = require('../conf')
 const router = express.Router()
-const { verifyToken } = require('../service/verif.service')
+const { verifyToken } = require('../services/verif.service')
 
 router.put('/', verifyToken, (req, res) => {
   connection.query('UPDATE moment SET moment_favorite = ? WHERE moment.id = ?', [req.body.moment_favorite, req.body.id], (err, results) => {
