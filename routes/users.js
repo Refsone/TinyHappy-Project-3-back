@@ -266,7 +266,7 @@ router.put('/:id/modify-email', verifyToken, (req, res) => {
   console.log(req.params)
   const id = req.params.id
   const newEmail = req.body.new_user_mail
-  connection.query('SELECT user_mail FROM user WHERE id = ?', id, [newEmail], (err, result) => {
+  connection.query('SELECT user_mail FROM user WHERE id = ?', [id, newEmail], (err, result) => {
     if (err) {
       return res.status(500).json({
         message: err.message,
@@ -275,7 +275,7 @@ router.put('/:id/modify-email', verifyToken, (req, res) => {
     } else if (result[0] === newEmail) {
       return res.status(401).send('Cette adresse email existe déjà')
     } else {
-      connection.query('UPDATE user SET user_mail = ? WHERE id = ?', id, [newEmail], (err, result) => {
+      connection.query('UPDATE user SET user_mail = ? WHERE id = ?', [newEmail, id], (err, result) => {
         if (err) {
           return res.status(500).json({
             message: err.message,
