@@ -277,7 +277,6 @@ router.put('/:id/modify-email', verifyToken, verifyDuplicateMail, (req, res) => 
             sql: err.sql
           })
         } else {
-          console.log(result)
           res.status(200).send('Email changed')
         }
       })
