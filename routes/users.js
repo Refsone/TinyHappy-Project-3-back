@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs')
 
 const SchemaValidator = require('../schemaValidator')
 const validateRequest = SchemaValidator(true)
-const { verifyToken } = require('../services/verif.service')
+const { verifyToken, verifyDuplicateMail } = require('../services/verif.service')
 
 router.get('/', verifyToken, (req, res) => {
   connection.query('SELECT user_mail, user_password FROM user', (err, results) => {
@@ -262,18 +262,13 @@ router.get('/:user_id/parameter', verifyToken, (req, res) => {
   })
 })
 
-router.put('/:id/modify-email', verifyToken, (req, res) => {
+router.put('/:id/modify-email', verifyToken, verifyDuplicateMail, (req, res) => {
   console.log(req.params)
   const id = req.params.id
   const newEmail = req.body.new_user_mail
   connection.query('SELECT user_mail FROM user WHERE id = ?', [id, newEmail], (err, result) => {
     if (err) {
-      return res.status(500).json({
-        message: err.message,
-        sql: err.sql
-      })
-    } else if (result[0] === newEmail) {
-      return res.status(401).send('Cette adresse email existe déjà')
+      return res.handleServerError(err)
     } else {
       connection.query('UPDATE user SET user_mail = ? WHERE id = ?', [newEmail, id], (err, result) => {
         if (err) {
