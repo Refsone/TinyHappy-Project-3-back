@@ -255,7 +255,6 @@ router.get('/:user_id/parameter', verifyToken, (req, res) => {
   connection.query('SELECT display_birthday FROM parameter WHERE parameter.user_id = ?', [req.params.user_id], (err, results) => {
     if (err) {
       res.status(500).send('Erreur lors de la recherche du user')
-      console.log(err)
     } else {
       res.json(results)
     }
@@ -263,7 +262,6 @@ router.get('/:user_id/parameter', verifyToken, (req, res) => {
 })
 
 router.put('/:id/modify-email', verifyToken, verifyDuplicateMail, (req, res) => {
-  console.log(req.params)
   const id = req.params.id
   const newEmail = req.body.new_user_mail
   connection.query('SELECT user_mail FROM user WHERE id = ?', [id, newEmail], (err, result) => {
