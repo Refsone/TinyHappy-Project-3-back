@@ -68,30 +68,30 @@ router.put('/tempPwd/', (req, res) => {
     bcrypt.compare(req.body.tempPwd, result[0].user_temp_password, (err, ok) => {
       if (err) {
         return res.status(500).send('Error when compare the password')
-      }
-      if (ok) {
+      } else {
         const date = new Date().getTime()
         // Verify if the temp password is still available
         if (result[0].temp_password_limit < date) {
           return res.status(403).send('The limit of the temporary password is over')
+        } else {
+          const formdata = {
+            user_mail: mail,
+            user_password: bcrypt.hashSync(req.body.newPwd),
+            user_temp_password: null,
+            temp_password_limit: null
+          }
+          connection.query('UPDATE user SET ? WHERE user_mail = ?', [formdata, mail], (err, result) => {
+            if (err) {
+              return res.status(500).json({
+                message: err.message,
+                sql: err.sql
+              })
+            }
+            return res.status(200).send('Password updated!')
+          })
         }
       }
     })
-  })
-  const formdata = {
-    user_mail: mail,
-    user_password: bcrypt.hashSync(req.body.newPwd),
-    user_temp_password: null,
-    temp_password_limit: null
-  }
-  connection.query('UPDATE user SET ? WHERE user_mail = ?', [formdata, mail], (err, result) => {
-    if (err) {
-      return res.status(500).json({
-        message: err.message,
-        sql: err.sql
-      })
-    }
-    return res.status(200).send('Password updated!')
   })
 })
 
