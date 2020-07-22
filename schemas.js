@@ -48,7 +48,7 @@ const userModifySchema = Joi.object().keys({
 })
 
 module.exports = {
-  '/signUp/': addNewUser,
+  // '/signUp/': addNewUser,
   '/contacts/new': addNewContact,
   '/family-members/new': familyAddSchema,
   '/family-members/update': familyModifySchema,
