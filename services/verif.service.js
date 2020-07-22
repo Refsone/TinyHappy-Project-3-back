@@ -12,7 +12,9 @@ const verifyPassWord = (req, res, next) => {
     symbol: 0,
     requirementCount: 0
   }
+  console.log('beforeIf')
   if (passwordComplexity(complexityOptions).validate(req.body.user_password).error) {
+    console.log('inIf')
     return res.status(403).send('Bad Password format')
   }
   next()

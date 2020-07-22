@@ -8,6 +8,7 @@ const validateRequest = SchemaValidator(true)
 const { verifyDuplicateMail, verifyEmail, verifyPassWord } = require('../services/verif.service')
 
 router.post('/', verifyEmail, verifyDuplicateMail, verifyPassWord, validateRequest, (req, res) => {
+  console.log('Valide')
   const user = {
     user_firstname: req.body.user_firstname,
     user_lastname: req.body.user_lastname,
