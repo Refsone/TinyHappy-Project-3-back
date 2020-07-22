@@ -13,13 +13,13 @@ const { secret, connection } = require('../conf')
 //     symbol: 0,
 //     requirementCount: 0
 //   }
-  console.log('beforeIf')
-  if (passwordComplexity(complexityOptions).validate(req.body.user_password).error) {
-    console.log('inIf')
-    return res.status(403).send('Bad Password format')
-  }
-  next()
-}
+//   console.log('beforeIf')
+//   if (passwordComplexity(complexityOptions).validate(req.body.user_password).error) {
+//     console.log('inIf')
+//     return res.status(403).send('Bad Password format')
+//   }
+//   next()
+// }
 
 const verifyEmail = (req, res, next) => {
   console.log('verifyEmail')
