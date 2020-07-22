@@ -1,13 +1,13 @@
 const express = require('express')
 const router = express.Router()
 const { connection } = require('../conf')
-const SchemaValidator = require('../schemaValidator')
+// const SchemaValidator = require('../schemaValidator')
 
-const validateRequest = SchemaValidator(false)
+// const validateRequest = SchemaValidator(false)
 const { verifyToken } = require('../services/verif.service')
 
 // Add a new family member
-router.post('/new', verifyToken, validateRequest, (req, res) => {
+router.post('/new', verifyToken, (req, res) => {
   const formData = req.body
 
   connection.query('INSERT INTO family_member SET ?', formData, (err, results) => {
@@ -45,7 +45,7 @@ router.post('/new', verifyToken, validateRequest, (req, res) => {
 })
 
 // Modify a family member
-router.put('/update', verifyToken, validateRequest, (req, res) => {
+router.put('/update', verifyToken, (req, res) => {
   const formData = req.body
 
   connection.query('UPDATE family_member SET ? WHERE id = ?', [formData, formData.id], (err, results) => {

@@ -1,18 +1,18 @@
 const jwt = require('jsonwebtoken')
 const { secret, connection } = require('../conf')
-const passwordComplexity = require('joi-password-complexity')
+// const passwordComplexity = require('joi-password-complexity')
 
-const verifyPassWord = (req, res, next) => {
-  console.log('verifyPassWord')
-  const complexityOptions = {
-    min: 8,
-    max: 50,
-    lowerCase: 0,
-    upperCase: 1,
-    numeric: 1,
-    symbol: 0,
-    requirementCount: 0
-  }
+// const verifyPassWord = (req, res, next) => {
+//   console.log('verifyPassWord')
+//   const complexityOptions = {
+//     min: 8,
+//     max: 50,
+//     lowerCase: 0,
+//     upperCase: 1,
+//     numeric: 1,
+//     symbol: 0,
+//     requirementCount: 0
+//   }
   console.log('beforeIf')
   if (passwordComplexity(complexityOptions).validate(req.body.user_password).error) {
     console.log('inIf')
@@ -81,6 +81,5 @@ module.exports = {
   verifyDuplicateMail,
   verifyEmail,
   verifyIfEmailExist,
-  verifyPassWord,
   verifyToken
 }
