@@ -3,7 +3,7 @@ const router = express.Router()
 const { connection } = require('../conf')
 const SchemaValidator = require('../schemaValidator')
 
-const validateRequest = SchemaValidator(true)
+const validateRequest = SchemaValidator(false)
 const { verifyToken } = require('../services/verif.service')
 
 // Add a new contact

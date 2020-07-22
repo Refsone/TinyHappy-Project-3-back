@@ -4,7 +4,7 @@ const { connection } = require('../conf')
 
 const router = express.Router()
 const SchemaValidator = require('../schemaValidator')
-const validateRequest = SchemaValidator(true)
+const validateRequest = SchemaValidator(false)
 const { verifyDuplicateMail, verifyEmail, verifyPassWord } = require('../services/verif.service')
 
 router.post('/', verifyEmail, verifyDuplicateMail, verifyPassWord, validateRequest, (req, res) => {

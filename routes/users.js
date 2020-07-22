@@ -5,7 +5,7 @@ const router = express.Router()
 const bcrypt = require('bcryptjs')
 
 const SchemaValidator = require('../schemaValidator')
-const validateRequest = SchemaValidator(true)
+const validateRequest = SchemaValidator(false)
 const { verifyToken, verifyDuplicateMail } = require('../services/verif.service')
 
 router.get('/', verifyToken, (req, res) => {
