@@ -1,13 +1,13 @@
 const express = require('express')
 const router = express.Router()
 const { connection } = require('../conf')
-// const SchemaValidator = require('../schemaValidator')
+const SchemaValidator = require('../schemaValidator')
 
-// const validateRequest = SchemaValidator(false)
+const validateRequest = SchemaValidator(true)
 const { verifyToken } = require('../services/verif.service')
 
 // Add a new contact
-router.post('/new', verifyToken, (req, res) => {
+router.post('/new', verifyToken, validateRequest, (req, res) => {
   const { mail, user_id } = req.body
   connection.query('INSERT INTO contact SET ?', { mail: mail }, (err, result) => {
     if (err) {
