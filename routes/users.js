@@ -68,30 +68,30 @@ router.put('/tempPwd/', (req, res) => {
     bcrypt.compare(req.body.tempPwd, result[0].user_temp_password, (err, ok) => {
       if (err) {
         return res.status(500).send('Error when compare the password')
-      }
-      if (ok) {
+      } else {
         const date = new Date().getTime()
         // Verify if the temp password is still available
         if (result[0].temp_password_limit < date) {
           return res.status(403).send('The limit of the temporary password is over')
+        } else {
+          const formdata = {
+            user_mail: mail,
+            user_password: bcrypt.hashSync(req.body.newPwd),
+            user_temp_password: null,
+            temp_password_limit: null
+          }
+          connection.query('UPDATE user SET ? WHERE user_mail = ?', [formdata, mail], (err, result) => {
+            if (err) {
+              return res.status(500).json({
+                message: err.message,
+                sql: err.sql
+              })
+            }
+            return res.status(200).send('Password updated!')
+          })
         }
       }
     })
-  })
-  const formdata = {
-    user_mail: mail,
-    user_password: bcrypt.hashSync(req.body.newPwd),
-    user_temp_password: null,
-    temp_password_limit: null
-  }
-  connection.query('UPDATE user SET ? WHERE user_mail = ?', [formdata, mail], (err, result) => {
-    if (err) {
-      return res.status(500).json({
-        message: err.message,
-        sql: err.sql
-      })
-    }
-    return res.status(200).send('Password updated!')
   })
 })
 
@@ -226,13 +226,13 @@ router.put('/:id/modify-password', verifyToken, (req, res) => {
   const newPassword = req.body.newPassword
   const user_password = req.body.actualPassword
   connection.query('SELECT user_password FROM user WHERE id = ?', id, (err, result) => {
-    const pwdIsValid = bcrypt.compareSync(user_password, result[0].user_password)
     if (err) {
       return res.status(500).json({
         message: err.message,
         sql: err.sql
       })
-    } else if (pwdIsValid) {
+    }
+    if (bcrypt.compareSync(user_password, result[0].user_password)) {
       const hashNewPassword = bcrypt.hashSync(newPassword)
       connection.query('UPDATE user SET user_password = ? WHERE id = ?', [hashNewPassword, id], (err, result) => {
         if (err) {
@@ -240,15 +240,14 @@ router.put('/:id/modify-password', verifyToken, (req, res) => {
             message: err.message,
             sql: err.sql
           })
-        } else {
-          res.status(201).json('password change successfully')
         }
+        return res.status(201).send('password change successfully')
       })
     } else {
-      res.sendStatus(400)
+      // if the old password doesn't match with user in the BDD
+      return res.status(401).send('The password does not exist')
     }
-  }
-  )
+  })
 })
 
 router.get('/:user_id/parameter', verifyToken, (req, res) => {

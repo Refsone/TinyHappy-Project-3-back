@@ -13,7 +13,7 @@ const verifyPassWord = (req, res, next) => {
     requirementCount: 0
   }
   if (passwordComplexity(complexityOptions).validate(req.body.user_password).error) {
-    return res.status(403).send('')
+    return res.status(403).send('Bad Password format')
   }
   next()
 }
@@ -24,6 +24,21 @@ const verifyEmail = (req, res, next) => {
     return res.status(401).send('Unauthorized user!')
   }
   next()
+}
+
+// Verify if the email exist in the database
+const verifyDuplicateMail = (req, res, next) => {
+  connection.query('SELECT * from user WHERE user_mail = ?', req.body.user_mail, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        message: err.message,
+        sql: err.sql
+      })
+    } else if (result[0]) {
+      return res.status(403).send('email already exist')
+    }
+    next()
+  })
 }
 
 // Verify if the email exist in the database
@@ -38,21 +53,6 @@ const verifyIfEmailExist = (req, res, next) => {
       return res.status(404).send('The selected email doesn\'t exist in the dataBase')
     }
     req.body.name = result[0].user_firstname
-    next()
-  })
-}
-
-// Verify if the email exist in the database
-const verifyDuplicateMail = (req, res, next) => {
-  connection.query('SELECT * from user WHERE user_mail = ?', req.body.user_mail, (err, result) => {
-    if (err) {
-      return res.status(500).json({
-        message: err.message,
-        sql: err.sql
-      })
-    } else if (result[0]) {
-      return res.status(403).send('email already exist')
-    }
     next()
   })
 }
@@ -72,4 +72,10 @@ const verifyToken = (req, res, next) => {
   }
 }
 
-module.exports = { verifyEmail, verifyDuplicateMail, verifyToken, verifyIfEmailExist, verifyPassWord }
+module.exports = {
+  verifyDuplicateMail,
+  verifyEmail,
+  verifyIfEmailExist,
+  verifyPassWord,
+  verifyToken
+}
