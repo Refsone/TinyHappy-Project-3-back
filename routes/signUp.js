@@ -4,11 +4,10 @@ const { connection } = require('../conf')
 
 const router = express.Router()
 const SchemaValidator = require('../schemaValidator')
-const validateRequest = SchemaValidator(false)
+const validateRequest = SchemaValidator(true)
 const { verifyDuplicateMail, verifyEmail } = require('../services/verif.service')
 
 router.post('/', verifyEmail, verifyDuplicateMail, validateRequest, (req, res) => {
-  console.log('Valide')
   const user = {
     user_firstname: req.body.user_firstname,
     user_lastname: req.body.user_lastname,

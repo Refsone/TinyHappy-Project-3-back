@@ -3,7 +3,6 @@ const { secret, connection } = require('../conf')
 const passwordComplexity = require('joi-password-complexity')
 
 const verifyPassWord = (req, res, next) => {
-  console.log('verifyPassWord')
   const complexityOptions = {
     min: 8,
     max: 50,
@@ -13,16 +12,13 @@ const verifyPassWord = (req, res, next) => {
     symbol: 0,
     requirementCount: 0
   }
-  console.log('beforeIf')
   if (passwordComplexity(complexityOptions).validate(req.body.user_password).error) {
-    console.log('inIf')
     return res.status(403).send('Bad Password format')
   }
   next()
 }
 
 const verifyEmail = (req, res, next) => {
-  console.log('verifyEmail')
   const emailRegEx = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/
   if (!emailRegEx.test(req.body.user_mail)) {
     return res.status(401).send('Unauthorized user!')
@@ -32,7 +28,6 @@ const verifyEmail = (req, res, next) => {
 
 // Verify if the email exist in the database
 const verifyDuplicateMail = (req, res, next) => {
-  console.log('verifyDuplicateMail')
   connection.query('SELECT * from user WHERE user_mail = ?', req.body.user_mail, (err, result) => {
     if (err) {
       return res.status(500).json({

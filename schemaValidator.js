@@ -19,7 +19,6 @@ module.exports = (useJoiError = false) => {
 
   // return the validation middleware
   return (req, res, next) => {
-    console.log(req.originalUrl, 'original')
     const route = req.originalUrl
     const method = req.method.toLowerCase()
     if (_.includes(_supportedMethods, method) && _.has(Schemas, route)) {
