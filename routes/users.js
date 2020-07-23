@@ -4,8 +4,8 @@ const { connection } = require('../conf')
 const router = express.Router()
 const bcrypt = require('bcryptjs')
 
-// const SchemaValidator = require('../schemaValidator')
-// const validateRequest = SchemaValidator(false)
+const SchemaValidator = require('../schemaValidator')
+const validateRequest = SchemaValidator(true)
 const { verifyToken, verifyDuplicateMail } = require('../services/verif.service')
 
 router.get('/', verifyToken, (req, res) => {
@@ -183,7 +183,7 @@ router.get('/:user_id/contacts', verifyToken, (req, res) => {
   })
 })
 
-router.put('/update', verifyToken, (req, res) => {
+router.put('/update', verifyToken, validateRequest, (req, res) => {
   const formdata = req.body
   const id = req.body.id
   connection.query('UPDATE user SET ? WHERE id = ?', [formdata, id], (err, result) => {
