@@ -183,7 +183,7 @@ router.get('/:user_id/contacts', verifyToken, (req, res) => {
   })
 })
 
-router.put('/update', verifyToken, validateRequest, (req, res) => {
+router.put('/update', verifyToken, (req, res) => {
   const formdata = req.body
   const id = req.body.id
   connection.query('UPDATE user SET ? WHERE id = ?', [formdata, id], (err, result) => {
