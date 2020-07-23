@@ -1,22 +1,5 @@
 const jwt = require('jsonwebtoken')
 const { secret, connection } = require('../conf')
-const passwordComplexity = require('joi-password-complexity')
-
-const verifyPassWord = (req, res, next) => {
-  const complexityOptions = {
-    min: 8,
-    max: 50,
-    lowerCase: 0,
-    upperCase: 1,
-    numeric: 1,
-    symbol: 0,
-    requirementCount: 0
-  }
-  if (passwordComplexity(complexityOptions).validate(req.body.user_password).error) {
-    return res.status(403).send('Bad Password format')
-  }
-  next()
-}
 
 const verifyEmail = (req, res, next) => {
   const emailRegEx = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/
@@ -76,6 +59,5 @@ module.exports = {
   verifyDuplicateMail,
   verifyEmail,
   verifyIfEmailExist,
-  verifyPassWord,
   verifyToken
 }
