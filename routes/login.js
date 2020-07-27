@@ -5,7 +5,7 @@ const { connection, secret } = require('../conf')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
-const { verifyEmail } = require('../service/verif.service')
+const { verifyEmail } = require('../services/verif.service')
 
 const checkingUser = (req, res, next) => {
   const userMail = req.body.user_mail
@@ -27,7 +27,7 @@ const checkingUser = (req, res, next) => {
 
 const generateToken = (req, res, next) => {
   const token = jwt.sign(
-    { id: req.user.id },
+    { id: req.user.id, mail: req.user.user_mail, name: req.user.user_firstname },
     secret,
     { algorithm: 'HS256' }
   )

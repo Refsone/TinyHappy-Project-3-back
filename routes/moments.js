@@ -2,7 +2,7 @@ const express = require('express')
 
 const { connection } = require('../conf')
 const router = express.Router()
-const { verifyToken } = require('../service/verif.service')
+const { verifyToken } = require('../services/verif.service')
 
 router.put('/', verifyToken, (req, res) => {
   connection.query('UPDATE moment SET moment_favorite = ? WHERE moment.id = ?', [req.body.moment_favorite, req.body.id], (err, results) => {
@@ -24,7 +24,7 @@ router.post('/create', verifyToken, (req, res) => {
     } else {
       const sql = 'INSERT INTO family_moment VALUES ?'
       const sqlValues = []
-      if(idFamilyMember.length > 0){
+      if (idFamilyMember.length > 0) {
         idFamilyMember.map(id => {
           sqlValues.push([id, results.insertId])
         })
