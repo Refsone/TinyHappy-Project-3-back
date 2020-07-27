@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs')
 
 const SchemaValidator = require('../schemaValidator')
 const validateRequest = SchemaValidator(true)
-const { verifyToken, verifyDuplicateMail } = require('../services/verif.service')
+const { verifyToken } = require('../services/verif.service')
 
 router.get('/', verifyToken, (req, res) => {
   connection.query('SELECT user_mail, user_password FROM user', (err, results) => {
@@ -18,8 +18,8 @@ router.get('/', verifyToken, (req, res) => {
   })
 })
 
-router.post('/tempPwd/', (req, res) => {
-  const { mail } = req.body
+router.get('/tempPwd/', (req, res) => {
+  const { mail } = req.query
   // Verify if the mail exist on the database
   connection.query('SELECT user_temp_password, temp_password_limit FROM user WHERE user_mail = ?', mail, (err, result) => {
     if (err) {
@@ -33,7 +33,7 @@ router.post('/tempPwd/', (req, res) => {
       })
     }
     // Verify is the temporary password match with bdd password
-    bcrypt.compare(req.body.tempPwd, result[0].user_temp_password, (err, ok) => {
+    bcrypt.compare(req.query.tempPwd, result[0].user_temp_password, (err, ok) => {
       if (err) {
         return res.status(500).send('Error when compare the password')
       }
@@ -46,51 +46,6 @@ router.post('/tempPwd/', (req, res) => {
         return res.status(200).send('Temporary password is valid')
       }
       return res.status(404).send('Temporary password is not valid')
-    })
-  })
-})
-
-router.put('/tempPwd/', (req, res) => {
-  const { mail } = req.body
-  // Verify if the mail exist on the database
-  connection.query('SELECT user_temp_password, temp_password_limit FROM user WHERE user_mail = ?', mail, (err, result) => {
-    if (err) {
-      return res.status(500).json({
-        message: err.message,
-        sql: err.sql
-      })
-    } else if (!result[0]) {
-      return res.status(404).json({
-        message: 'The email does not exist'
-      })
-    }
-    // Verify is the temporary password match with bdd password
-    bcrypt.compare(req.body.tempPwd, result[0].user_temp_password, (err, ok) => {
-      if (err) {
-        return res.status(500).send('Error when compare the password')
-      } else {
-        const date = new Date().getTime()
-        // Verify if the temp password is still available
-        if (result[0].temp_password_limit < date) {
-          return res.status(403).send('The limit of the temporary password is over')
-        } else {
-          const formdata = {
-            user_mail: mail,
-            user_password: bcrypt.hashSync(req.body.newPwd),
-            user_temp_password: null,
-            temp_password_limit: null
-          }
-          connection.query('UPDATE user SET ? WHERE user_mail = ?', [formdata, mail], (err, result) => {
-            if (err) {
-              return res.status(500).json({
-                message: err.message,
-                sql: err.sql
-              })
-            }
-            return res.status(200).send('Password updated!')
-          })
-        }
-      }
     })
   })
 })
@@ -129,7 +84,7 @@ router.get('/:user_id/family-members/:member_id', verifyToken, (req, res) => {
 
 router.get('/:id/moments', verifyToken, (req, res) => {
   const sql = `
-  SELECT moment.id, moment_text, moment_context, moment_favorite, moment_event_date, family_firstname, type, user_isPresent, color FROM moment
+  SELECT moment.id AS momentId, moment_text, moment_context, moment_favorite, moment_event_date, family_firstname, type, user_isPresent, color, fme.id FROM moment
   JOIN family_moment ON moment_id=moment.id
   JOIN family_member fme ON family_member_id=fme.id
   JOIN color_family ON color_family_id=color_family.id
@@ -140,6 +95,7 @@ router.get('/:id/moments', verifyToken, (req, res) => {
   `
   connection.query(sql, [req.params.id], (err, results) => {
     if (err) {
+      console.log(err)
       res.status(500).send('Erreur lors de la récupération des moments')
     } else {
       let prevText = ''
@@ -147,7 +103,7 @@ router.get('/:id/moments', verifyToken, (req, res) => {
       const idToDrop = []
       const moments = results
         .map((moment, id) => {
-          const familyFirstname = { firstname: moment.family_firstname, color: moment.color }
+          const familyFirstname = { firstname: moment.family_firstname, color: moment.color, id: moment.id}
           if (moment.moment_text === prevText) {
             idToDrop.push(id - 1)
             moment.firstname_color = prevName.concat(familyFirstname)
@@ -158,7 +114,6 @@ router.get('/:id/moments', verifyToken, (req, res) => {
           prevName = moment.firstname_color
           delete moment.family_firstname
           delete moment.color
-
           return moment
         })
         .filter((elt, id) => idToDrop.indexOf(id) === -1)
@@ -226,14 +181,14 @@ router.put('/:id/modify-password', verifyToken, (req, res) => {
   const newPassword = req.body.newPassword
   const user_password = req.body.actualPassword
   connection.query('SELECT user_password FROM user WHERE id = ?', id, (err, result) => {
+    // const pwdIsValid = bcrypt.compareSync(user_password, result[0].user_password)
     if (err) {
       console.log(err)
       return res.status(500).json({
         message: err.message,
         sql: err.sql
       })
-    }
-    if (bcrypt.compareSync(user_password, result[0].user_password)) {
+    } else if (bcrypt.compareSync(user_password, result[0].user_password)) {
       const hashNewPassword = bcrypt.hashSync(newPassword)
       connection.query('UPDATE user SET user_password = ? WHERE id = ?', [hashNewPassword, id], (err, result) => {
         if (err) {
@@ -241,45 +196,15 @@ router.put('/:id/modify-password', verifyToken, (req, res) => {
             message: err.message,
             sql: err.sql
           })
-        }
-        return res.status(201).send('password change successfully')
-      })
-    } else {
-      // if the old password doesn't match with user in the BDD
-      return res.status(401).send('The password does not exist')
-    }
-  })
-})
-
-router.get('/:user_id/parameter', verifyToken, (req, res) => {
-  connection.query('SELECT display_birthday FROM parameter WHERE parameter.user_id = ?', [req.params.user_id], (err, results) => {
-    if (err) {
-      res.status(500).send('Erreur lors de la recherche du user')
-    } else {
-      res.json(results)
-    }
-  })
-})
-
-router.put('/:id/modify-email', verifyToken, verifyDuplicateMail, (req, res) => {
-  const id = req.params.id
-  const newEmail = req.body.new_user_mail
-  connection.query('SELECT user_mail FROM user WHERE id = ?', [id, newEmail], (err, result) => {
-    if (err) {
-      return res.handleServerError(err)
-    } else {
-      connection.query('UPDATE user SET user_mail = ? WHERE id = ?', [newEmail, id], (err, result) => {
-        if (err) {
-          return res.status(500).json({
-            message: err.message,
-            sql: err.sql
-          })
         } else {
-          res.status(200).send('Email changed')
+          res.sendStatus(201)
         }
       })
+    } else {
+      res.sendStatus(401)
     }
-  })
+  }
+  )
 })
 
 module.exports = router
