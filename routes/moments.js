@@ -20,41 +20,40 @@ router.post('/create', verifyToken, (req, res) => {
   delete dataMoment.family_id
   connection.query('INSERT INTO moment SET ?', [dataMoment], (err, results) => {
     if (err) {
-      res.status(500).json({
+      return res.status(500).json({
         message: err.message,
         sql: err.sql
       })
-    } else {
+    }
+    if (idFamilyMember.length > 0) {
       const sql = 'INSERT INTO family_moment VALUES ?'
       const sqlValues = []
-      if (idFamilyMember.length > 0) {
-        idFamilyMember.map(id => {
-          sqlValues.push([id, results.insertId])
-        })
-      } else {
-        sqlValues.push([parseInt(dataMoment.user_id), results.insertId])
-      }
+      idFamilyMember.map(id => {
+        sqlValues.push([id, results.insertId])
+      })
       connection.query(sql, [sqlValues], (err, results) => {
         if (err) {
-          res.status(500).json({
+          return res.status(500).json({
             message: err.message,
             sql: err.sql
           })
-        } else {
-          res.sendStatus(201)
         }
       })
+      // else {
+      //   sqlValues.push([parseInt(dataMoment.user_id), results.insertId])
+      // }
     }
+    return res.sendStatus(201)
   })
 })
 
 router.put('/modify', verifyToken, (req, res) => {
   const { moment_id, family_id, ...dataMoment } = req.body
   const idFamilyMember = family_id
+  console.log(req.body)
 
   connection.query('UPDATE moment SET ? WHERE id = ?', [dataMoment, moment_id], (err, results) => {
     if (err) {
-      console.log(err)
       return res.status(500).json({
         message: err.message,
         sql: err.sql
@@ -67,27 +66,25 @@ router.put('/modify', verifyToken, (req, res) => {
           sql: err.sql
         })
       }
-      const sql = 'INSERT INTO family_moment VALUES ?'
-      const sqlValues = []
       if (idFamilyMember.length > 0) {
+        console.log(idFamilyMember.length)
+        const sql = 'INSERT INTO family_moment VALUES ?'
+        const sqlValues = []
         idFamilyMember.map(id => {
           sqlValues.push([id, moment_id])
         })
-      } else {
-        sqlValues.push([parseInt(dataMoment.user_id), moment_id])
+        console.log(sqlValues)
+        connection.query(sql, [sqlValues], (err, results) => {
+          if (err) {
+            return res.status(500).json({
+              message: err.message,
+              sql: err.sql
+            })
+          }
+        })
       }
-      connection.query(sql, [sqlValues], (err, results) => {
-        if (err) {
-          console.log(err)
-          res.status(500).json({
-            message: err.message,
-            sql: err.sql
-          })
-        } else {
-          res.sendStatus(200)
-        }
-      })
     })
+    res.sendStatus(200)
   })
 })
 
