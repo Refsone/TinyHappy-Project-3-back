@@ -48,6 +48,7 @@ const verifyToken = (req, res, next) => {
       if (err) {
         return res.status(403).json(err)
       }
+      req.user = result
       next()
     })
   } else {
