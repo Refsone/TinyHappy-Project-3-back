@@ -39,9 +39,6 @@ router.post('/create', verifyToken, (req, res) => {
           })
         }
       })
-      // else {
-      //   sqlValues.push([parseInt(dataMoment.user_id), results.insertId])
-      // }
     }
     return res.sendStatus(201)
   })
@@ -50,7 +47,6 @@ router.post('/create', verifyToken, (req, res) => {
 router.put('/modify', verifyToken, (req, res) => {
   const { moment_id, family_id, ...dataMoment } = req.body
   const idFamilyMember = family_id
-  console.log(req.body)
 
   connection.query('UPDATE moment SET ? WHERE id = ?', [dataMoment, moment_id], (err, results) => {
     if (err) {
@@ -85,6 +81,18 @@ router.put('/modify', verifyToken, (req, res) => {
       }
     })
     res.sendStatus(200)
+  })
+})
+
+router.delete('/delete/:id', (req, res) => {
+  connection.query('DELETE FROM moment WHERE id = ?', req.params.id, (err, result) => {
+    if (err) {
+      return res.status(500).json({
+        message: err.message,
+        sql: err.sql
+      })
+    }
+    res.status(204).send('Moment deleted')
   })
 })
 

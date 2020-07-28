@@ -51,7 +51,7 @@ router.get('/tempPwd/', (req, res) => {
 })
 
 router.get('/:id', verifyToken, (req, res) => {
-  connection.query('SELECT user_firstname, user_lastname, user_firstname, user_birthday, color_family_id, color FROM user JOIN color_family ON color_family.id=user.color_family_id WHERE user.id = ?', [req.params.id], (err, results) => {
+  connection.query('SELECT user.id, user_firstname, user_lastname, user_firstname, user_birthday, color_family_id, color FROM user JOIN color_family ON color_family.id=user.color_family_id WHERE user.id = ?', [req.params.id], (err, results) => {
     if (err) {
       res.status(500).send('Erreur lors de la récupération de l\'utilisateur')
     } else {
