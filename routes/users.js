@@ -95,10 +95,8 @@ router.get('/:id/moments', verifyToken, (req, res) => {
   `
   connection.query(sql, [req.params.id], (err, results) => {
     if (err) {
-      console.log(err)
       res.status(500).send('Erreur lors de la récupération des moments')
     } else {
-      // console.log(results)
       let prevText = ''
       let prevName = []
       const idToDrop = []
@@ -182,9 +180,7 @@ router.put('/modify-password', verifyToken, (req, res) => {
   const newPassword = req.body.newPassword
   const userPassword = req.body.actualPassword
   connection.query('SELECT user_password FROM user WHERE id = ?', id, (err, result) => {
-    // const pwdIsValid = bcrypt.compareSync(user_password, result[0].user_password)
     if (err) {
-      console.log(err)
       return res.status(500).json({
         message: err.message,
         sql: err.sql

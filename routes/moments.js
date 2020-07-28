@@ -63,13 +63,11 @@ router.put('/modify', verifyToken, (req, res) => {
         })
       }
       if (idFamilyMember.length > 0) {
-        console.log(idFamilyMember.length)
         const sql = 'INSERT INTO family_moment VALUES ?'
         const sqlValues = []
         idFamilyMember.map(id => {
           sqlValues.push([id, moment_id])
         })
-        console.log(sqlValues)
         connection.query(sql, [sqlValues], (err, results) => {
           if (err) {
             return res.status(500).json({
