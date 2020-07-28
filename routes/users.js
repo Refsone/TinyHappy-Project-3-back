@@ -177,10 +177,10 @@ router.put('/update', verifyToken, validateRequest, (req, res) => {
   })
 })
 
-router.put('/:id/modify-password', verifyToken, (req, res) => {
-  const id = req.params.id
+router.put('/modify-password', verifyToken, (req, res) => {
+  const id = req.user.id
   const newPassword = req.body.newPassword
-  const user_password = req.body.actualPassword
+  const userPassword = req.body.actualPassword
   connection.query('SELECT user_password FROM user WHERE id = ?', id, (err, result) => {
     // const pwdIsValid = bcrypt.compareSync(user_password, result[0].user_password)
     if (err) {
@@ -189,7 +189,8 @@ router.put('/:id/modify-password', verifyToken, (req, res) => {
         message: err.message,
         sql: err.sql
       })
-    } else if (bcrypt.compareSync(user_password, result[0].user_password)) {
+    }
+    if (bcrypt.compareSync(userPassword, result[0].user_password)) {
       const hashNewPassword = bcrypt.hashSync(newPassword)
       connection.query('UPDATE user SET user_password = ? WHERE id = ?', [hashNewPassword, id], (err, result) => {
         if (err) {
