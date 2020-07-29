@@ -21,7 +21,6 @@ router.post('/', (req, res) => {
 
   transporter.use('compile', hbs({
     viewEngine: { layoutsDir: './views', engine: 'express-handlebars', defaultLayout: false },
-
     viewPath: path.resolve(__dirname, '../../views')
   }))
 

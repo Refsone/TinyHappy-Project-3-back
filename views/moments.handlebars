@@ -92,7 +92,10 @@
 <body>
     <p class="top-message">Hello,</p>
     <br>
-    <p class="top-message">{{userName}} vous partage ses meilleurs Moments, ainsi que ceux de
+    <p class="top-message">{{userName}} vous partage ses meilleurs Moments
+        {{#if otherNames}}
+        , ainsi que ceux de
+        {{/if}}
         {{#each otherNames}}
         {{this}} et
         {{/each}}
