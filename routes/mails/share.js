@@ -32,6 +32,7 @@ router.post('/', (req, res) => {
     template: 'moments',
     context: {
       userName: req.body.userName,
+      userColor: req.body.userColor,
       lastOtherNames: req.body.authorsSelect[lenghtOtherNames - 1],
       otherNames: req.body.authorsSelect.splice(0, lenghtOtherNames - 1),
       moments: momentsData
